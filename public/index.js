@@ -20,7 +20,6 @@ const issueEvents = ["labeled", "unlabeled", "commented", "closed", "opened"];
 const labelEvent = ["labeled", "unlabeled"];
 const issueState = ["closed", "reopened"];
 
-// var oauth_token = 'token 482a024a6472d8a13fb88e069695a6efb6465c7c';
 var oauth_token = ''
 var repo_name = '';
 var queryDate = '';
