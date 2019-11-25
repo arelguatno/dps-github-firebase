@@ -18,7 +18,7 @@ const githubUsers = [56451054, 56452310, 56452638];
 const issueEvents = ["labeled", "unlabeled", "commented"];
 const labelEvent = ["labeled", "unlabeled"];
 
-var oauth_token = 'token 61827f8a688618a9b1b2142b91a1e4ce76f301f2';
+var oauth_token = 'token ';
 
 var repo_name = "firebase-android-sdk";
 var queryDate = '2019-11-20';
