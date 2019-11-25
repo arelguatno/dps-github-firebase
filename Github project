@@ -1,0 +1,17 @@
+1. Get all list of issues updated
+
+https://api.github.com/repos/firebase/firebase-android-sdk/issues?since=2019-11-15&sort=created
+
+Header
+Key: Accept
+Value: application/vnd.github.symmetra-preview+json
+
+Get created_at
+
+2. Loop each github issues
+- if pull_request key is not null then don't do anything and proceed to next github issues
+Then check comment end point
+
+https://api.github.com/repos/firebase/firebase-android-sdk/issues/988/comments
+
+Each comment has its own node. Loop through each 
