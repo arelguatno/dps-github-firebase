@@ -19,9 +19,8 @@ const issueEvents = ["labeled", "unlabeled", "commented"];
 const labelEvent = ["labeled", "unlabeled"];
 
 var oauth_token = '';
-
-var repo_name = "firebase-android-sdk";
-var queryDate = '2019-11-20';
+var repo_name = '';
+var queryDate = '';
 
 //What to sort results by. Can be either created, updated, comments. Default: created
 var rest_api_sort_param = "created";
