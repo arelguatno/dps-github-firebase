@@ -31,6 +31,7 @@ var rest_api_sort_param = "created";
 var rest_api_state_param = "all";
 
 document.getElementById("startReport").addEventListener("click", myFunction);
+document.getElementById('logout').style.visibility = 'hidden';
 document.getElementById("logout").addEventListener("click", logOut);
 
 function logOut() {
@@ -285,6 +286,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         // console.log("token " + user.getToken);
         $('#user_name').html("Hello! " + user.email + " ");
+        document.getElementById('logout').style.visibility = 'visible';
     } else {
         authLogin();
     }
