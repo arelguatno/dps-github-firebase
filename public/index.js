@@ -11,16 +11,20 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
+var db = firebase.firestore();
 
 //UID of aye,rom,riza
 const githubUsers = [56451054, 56452310, 56452638];
 
-const issueEvents = ["labeled", "unlabeled", "commented"];
+const issueEvents = ["labeled", "unlabeled", "commented", "closed", "opened"];
 const labelEvent = ["labeled", "unlabeled"];
+const issueState = ["closed", "reopened"];
 
-var oauth_token = '';
+// var oauth_token = 'token 482a024a6472d8a13fb88e069695a6efb6465c7c';
+var oauth_token = ''
 var repo_name = '';
 var queryDate = '';
+var countissue = 0;
 
 //What to sort results by. Can be either created, updated, comments. Default: created
 var rest_api_sort_param = "created";
@@ -28,6 +32,17 @@ var rest_api_sort_param = "created";
 var rest_api_state_param = "all";
 
 document.getElementById("startReport").addEventListener("click", myFunction);
+document.getElementById("logout").addEventListener("click", logOut);
+
+function logOut() {
+
+    firebase.auth().signOut().then(function () {
+        // Sign-out successful.
+    }).catch(function (error) {
+        // An error happened.
+    });
+
+}
 
 function myFunction() {
     repo_name = document.getElementById("repo").value
@@ -36,19 +51,28 @@ function myFunction() {
     queryDate = document.getElementById("datepicker").value;
     document.getElementById("startReport").disabled = true;
 
+    var user = firebase.auth().currentUser;
+    if (user) {
+        db.collection("users").doc(user.uid)
+            .onSnapshot(function (doc) {
 
 
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            //Clear paragraph
-            $('#log_report').html("");
-            logReport("Initialing report, please wait....");
-            logReport("\n");
-            letsGo();
-        } else {
-            authLogin();
-        }
-    });
+                $('#log_report').html("");                        //Clear text field
+                countissue = 0;                                   // Set count number to 0
+                oauth_token = 'token ' + doc.data().accessToken;  // Get OAuth TOken
+                console.log("Oauth token: " + oauth_token);
+                logReport("Initialing report, please wait....");
+                logReport("\n");
+                letsGo();
+
+            }, function (error) {
+                console.log(error);
+            });
+
+    } else {
+        authLogin();
+    }
+
 }
 
 function logReport(logValue) {
@@ -74,16 +98,10 @@ function authLogin() {
     provider.addScope('repo');
 
     firebase.auth().signInWithPopup(provider).then(function (result) {
-        oauth_token = 'token ' + result.credential.accessToken;
+        var user = result.user;
+        saveUserToken(result.credential.accessToken, user);
     }).catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // ...
+        console.log(error);
     });
 }
 
@@ -124,7 +142,7 @@ const getListOfIssues = async function (pageNo = 1) {
 
 const getEntireIssueList = async function (pageNo = 1) {
     const results = await getListOfIssues(pageNo);
-    // console.log("Retreiving data from API for page : " + pageNo);
+    console.log("Retreiving data from API for page : " + pageNo);
     if (results.length > 0) {
         return results.concat(await getEntireIssueList(pageNo + 1));
     } else {
@@ -183,11 +201,16 @@ const letsGo = async () => {
 
                 // Check if user has contribution first
                 if (checkUser && (created_att.getTime() >= date_queryy.getTime()) && checkEvents) {
-                    logReportIssueWithLink("----------Android SDK #" + issue_number + "----------", html_url);
-                    logReport("Created at: " + created_at);
+                    countissue = countissue + 1;
+                    logReportIssueWithLink("(" + countissue + ")" + "----------" + repo_name + " #" + issue_number + "----------", html_url);
+                    var date1 = new Date();
+                    var date2 = new Date(created_at);
+                    var difference_in_time = date1.getTime() - date2.getTime();
+                    // logReport("<b>Date created</b>: " + formatDate(created_at) + " (" + msToTime(difference_in_time) + " ago)");
+                    logReport("<b>Date created</b>: " + formatDate(created_at));
                     logReport("State: " + state);
                     logReport("\n");
-                    logReport("Responses Time:");
+                    logReport("<b>Responses Time:</b>");
 
                     // Log Responses Time
                     for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
@@ -207,7 +230,7 @@ const letsGo = async () => {
                     }
 
                     logReport("\n");
-                    logReport("Labels:");
+                    logReport("<b>Labels:</b>");
 
                     // Log labels
                     for (var c = 0, length3 = myTimelineKeys.length; c < length3; c++) {
@@ -217,14 +240,38 @@ const letsGo = async () => {
                         if (checkUser && isLabelled) {
                             var date1 = new Date();
                             var date2 = new Date(myTimeline[c].created_at);
+                            var date3 = new Date(created_at);
 
                             // To calculate the time difference of two dates 
                             var difference_in_time = date1.getTime() - date2.getTime();
-                            logReport(myTimeline[c].actor.login + " " + myTimeline[c].event + " " + myTimeline[c].label.name + " " + msToTime(difference_in_time) + " ago");
+                            var difference_in_time2 = date2.getTime() - date3.getTime();
+
+                            logReport(myTimeline[c].actor.login + " " + myTimeline[c].event + " " + myTimeline[c].label.name + " " + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
                         }
                     }
                     logReport("\n");
+                    logReport("<b>Other Activity:</b>");
 
+                    // Log issue status, re-open case
+                    for (var d = 0, length3 = myTimelineKeys.length; d < length3; d++) {
+                        var checkUser = githubUsers.includes(myTimeline[d].actor.id);
+                        var state_change = issueState.includes(myTimeline[d].event);
+
+                        if (checkUser && state_change) {
+                            var date1 = new Date();
+                            var date2 = new Date(myTimeline[d].created_at);
+                            var date3 = new Date(created_at);
+
+                            // To calculate the time difference of two dates 
+                            var difference_in_time = date1.getTime() - date2.getTime();
+                            var difference_in_time2 = date2.getTime() - date3.getTime();
+
+                            logReport(myTimeline[d].actor.login + " " + myTimeline[d].event + " " + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                        }
+                    }
+
+                    logReport("\n");
+                    logReport("\n");
                     break;
                 }
             }
@@ -237,8 +284,39 @@ const letsGo = async () => {
 
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-
+        // console.log("token " + user.getToken);
+        $('#user_name').html("Hello! " + user.email + " ");
     } else {
         authLogin();
     }
 });
+
+function formatDate(s_date) {
+    var date = new Date(s_date);
+
+    return date.getFullYear() + "-" + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + " " + formatAMPM(date)
+}
+
+function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+}
+
+function saveUserToken(token, user) {
+    userDoc = {
+        'email': user.email,
+        'accessToken': token
+    }
+    var ref = db.collection('users').doc(user.uid);
+    ref.set(userDoc).then(writeResult => {
+        // user saved
+    }).catch(err => {
+        console.log(err);
+    });
+}

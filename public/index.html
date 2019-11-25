@@ -9,13 +9,14 @@
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-firestore.js"></script>
 
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
     $(function () {
-      $("#datepicker").datepicker({dateFormat: 'yy-mm-dd'}).datepicker("setDate", new Date());;
+      $("#datepicker").datepicker({ dateFormat: 'yy-mm-dd' }).datepicker("setDate", new Date());;
     });
   </script>
 </head>
@@ -23,7 +24,9 @@
 <body>
 
   <h2>Github Report Overview</h2>
-
+  <p4 id="user_name"> </p4><button type="button" id="logout">Logout</button>
+  
+  <br><br>
   <p>Data since: <input type="text" id="datepicker"></p>
 
   <select id="repo">
@@ -44,6 +47,7 @@
   </select>
 
   <button type="button" id="startReport">Run</button>
+
 
   <p id="log_report"></p>
 
