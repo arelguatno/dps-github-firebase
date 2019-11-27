@@ -196,6 +196,7 @@ const letsGo = async () => {
             for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
                 var date_queryy = new Date(queryDate);
                 var created_att = new Date(myTimeline[y].created_at);
+                console.log(myTimeline[y].id);
                 var checkUser = githubUsers.includes(myTimeline[y].actor.id);
                 var checkEvents = issueEvents.includes(myTimeline[y].event);
 
@@ -210,7 +211,7 @@ const letsGo = async () => {
                     logReport("<b>Date created</b>: " + formatDate(created_at));
                     logReport("State: " + state);
                     logReport("\n");
-                    logReport("<b>Responses Time:</b>");
+                    logReport("<b>Responses:</b>");
 
                     // Log Responses Time
                     for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
@@ -224,7 +225,7 @@ const letsGo = async () => {
                         var difference_in_time2 = date2.getTime() - date3.getTime();
 
                         if (checkUser2 && (created_att.getTime() >= date_queryy.getTime()) && checkEvents && (myTimeline[x].event == "commented")) {
-                            logReport(myTimeline[x].user.login + " " + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            logReport(myTimeline[x].user.login + " " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
                         }
 
                     }
@@ -246,7 +247,7 @@ const letsGo = async () => {
                             var difference_in_time = date1.getTime() - date2.getTime();
                             var difference_in_time2 = date2.getTime() - date3.getTime();
 
-                            logReport(myTimeline[c].actor.login + " " + myTimeline[c].event + " " + myTimeline[c].label.name + " " + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            logReport(myTimeline[c].actor.login + " " + myTimeline[c].event + " '" +  myTimeline[c].label.name + "' " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
                         }
                     }
                     logReport("\n");
@@ -301,7 +302,7 @@ function formatDate(s_date) {
 function formatAMPM(date) {
     var hours = date.getHours();
     var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
+    var ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
     minutes = minutes < 10 ? '0' + minutes : minutes;
