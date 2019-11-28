@@ -61,7 +61,7 @@ function myFunction() {
                 countissue = 0;                                   // Set count number to 0
                 oauth_token = 'token ' + doc.data().accessToken;  // Get OAuth TOken
                 console.log("Oauth token: " + oauth_token);
-                logReport("Initialing report, please wait....");
+                logReport("Preparing report, please wait....");
                 logReport("\n");
                 letsGo();
 
@@ -189,6 +189,7 @@ const letsGo = async () => {
             const created_at = myJson[i].created_at
             const state = myJson[i].state
             const html_url = myJson[i].html_url
+            const title = myJson[i].title;
 
             const myTimeline = await getEntireTimeline(issue_number, pageNo = 1);
             var myTimelineKeys = Object.keys(myTimeline);
@@ -203,7 +204,9 @@ const letsGo = async () => {
                 // Check if user has contribution first
                 if (checkUser && (created_att.getTime() >= date_queryy.getTime()) && checkEvents) {
                     countissue = countissue + 1;
+                    
                     logReportIssueWithLink("(" + countissue + ")" + "----------" + repo_name + " #" + issue_number + "----------", html_url);
+                    logReport("<b>Title</b>: " + title);
                     var date1 = new Date();
                     var date2 = new Date(created_at);
                     var difference_in_time = date1.getTime() - date2.getTime();

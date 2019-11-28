@@ -58,8 +58,8 @@ function myFunction() {
                 document.getElementById('report_start').style.display = 'block';
                 $('#log_report').html("");                        //Clear text field
                 countissue = 0;                                   // Set count number to 0
-                // oauth_token = 'token ' + doc.data().accessToken;  // Get OAuth TOken
-                oauth_token = 'token ' + 'f50ec21226ff6253b0d28b758f9846a834202557';
+                oauth_token = 'token ' + doc.data().accessToken;  // Get OAuth TOken
+                // oauth_token = 'token ' + 'f50ec21226ff6253b0d28b758f9846a834202557';
                 console.log("Initializing report, please wait..");
                 console.log("Oauth token: " + oauth_token);
                 letsGo();
