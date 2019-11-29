@@ -49,13 +49,14 @@ function myFunction() {
     rest_api_sort_param = document.getElementById("sort").value;
     rest_api_state_param = document.getElementById("state").value;
     queryDate = document.getElementById("datepicker").value;
+    only_updated = document.getElementById("allrecords").value;
+
     document.getElementById("startReport").disabled = true;
 
     var user = firebase.auth().currentUser;
     if (user) {
         db.collection("users").doc(user.uid)
             .onSnapshot(function (doc) {
-
 
                 $('#log_report').html("");                        //Clear text field
                 countissue = 0;                                   // Set count number to 0
@@ -197,14 +198,13 @@ const letsGo = async () => {
             for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
                 var date_queryy = new Date(queryDate);
                 var created_att = new Date(myTimeline[y].created_at);
-                console.log(myTimeline[y].id);
                 var checkUser = githubUsers.includes(myTimeline[y].actor.id);
                 var checkEvents = issueEvents.includes(myTimeline[y].event);
 
                 // Check if user has contribution first
                 if (checkUser && (created_att.getTime() >= date_queryy.getTime()) && checkEvents) {
                     countissue = countissue + 1;
-                    
+
                     logReportIssueWithLink("(" + countissue + ")" + "----------" + repo_name + " #" + issue_number + "----------", html_url);
                     logReport("<b>Title</b>: " + title);
                     var date1 = new Date();
@@ -228,7 +228,11 @@ const letsGo = async () => {
                         var difference_in_time2 = date2.getTime() - date3.getTime();
 
                         if (checkUser2 && (created_att.getTime() >= date_queryy.getTime()) && checkEvents && (myTimeline[x].event == "commented")) {
-                            logReport(myTimeline[x].user.login + " " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            if ((date2.getTime() >= date_queryy.getTime()) && only_updated != "all") {
+                                logReport(myTimeline[x].user.login + " " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            } else if(only_updated == "all") {
+                                logReport(myTimeline[x].user.login + " " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            }
                         }
 
                     }
@@ -250,7 +254,12 @@ const letsGo = async () => {
                             var difference_in_time = date1.getTime() - date2.getTime();
                             var difference_in_time2 = date2.getTime() - date3.getTime();
 
-                            logReport(myTimeline[c].actor.login + " " + myTimeline[c].event + " '" +  myTimeline[c].label.name + "' " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            if ((date2.getTime() >= date_queryy.getTime()) && only_updated != "all") {
+                                logReport(myTimeline[c].actor.login + " " + myTimeline[c].event + " '" + myTimeline[c].label.name + "' " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            } else if(only_updated == "all") {
+                                logReport(myTimeline[c].actor.login + " " + myTimeline[c].event + " '" + myTimeline[c].label.name + "' " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            }
+
                         }
                     }
                     logReport("\n");
@@ -270,7 +279,12 @@ const letsGo = async () => {
                             var difference_in_time = date1.getTime() - date2.getTime();
                             var difference_in_time2 = date2.getTime() - date3.getTime();
 
-                            logReport(myTimeline[d].actor.login + " " + myTimeline[d].event + " " + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            if ((date2.getTime() >= date_queryy.getTime()) && only_updated != "all") {
+                                logReport(myTimeline[d].actor.login + " " + myTimeline[d].event + " " + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            }else if(only_updated == "all") {
+                                logReport(myTimeline[d].actor.login + " " + myTimeline[d].event + " " + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
+                            }
+                            
                         }
                     }
 
