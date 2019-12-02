@@ -211,7 +211,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Issue Number,POC Assignee,Date Logged,Reporter,Triage Start Date,Triaged by,FR Date,FR by,Triage Completion,Last label changed by,Date Closed,Type,API");
+    logReport("Issue Number,POC Assignee,Date Logged,Reporter,Triage Start Date,Triaged by,FR Date, FR Rate, FR by,Triage Completion,Last label changed by,Date Closed,Type,API");
     logReport("\n");
 
 
@@ -226,6 +226,7 @@ const letsGo = async () => {
             var triage_start_date = '';
             var triaged_by = '';
             var fR_date = '';
+            var fr_rate = '';
             var fR_by = '';
             var triage_completion = '';
             var last_label_changed_by = '';
@@ -288,8 +289,14 @@ const letsGo = async () => {
                     var checkUser = githubUsers.includes(myTimeline[x].actor.id);
                     var isLabelled = labelEvent.includes(myTimeline[x].event);
 
+
+                    var date2 = new Date(myTimeline[x].created_at);
+                    var date3 = new Date(created_at);
+
+                    var difference_in_time2 = date2.getTime() - date3.getTime();
+
                     if (checkUser && myTimeline[x].event == "labeled") {
-                        triage_start_date = formatDate(myTimeline[x].created_at);
+                        triage_start_date = formatDate(myTimeline[x].created_at) + " (" + msToTime(difference_in_time2) + ")";
                         triaged_by = myTimeline[x].actor.login;
                         break;
                     }
@@ -320,9 +327,14 @@ const letsGo = async () => {
                 // first FR
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
                     var checkUser = githubUsers.includes(myTimeline[x].actor.id);
+                    var date2 = new Date(myTimeline[x].created_at);
+                    var date3 = new Date(created_at);
 
+                    var difference_in_time2 = date2.getTime() - date3.getTime();
                     if (checkUser && (myTimeline[x].event == "commented")) {
+
                         fR_date = formatDate(myTimeline[x].created_at);
+                        fr_rate = msToTime(difference_in_time2)
                         fR_by = myTimeline[x].actor.login;
                         break;
                     }
@@ -335,6 +347,7 @@ const letsGo = async () => {
                     + triage_start_date + ','
                     + triaged_by + ','
                     + fR_date + ','
+                    + fr_rate + ','
                     + fR_by + ','
                     + triage_completion + ','
                     + last_label_changed_by + ','
