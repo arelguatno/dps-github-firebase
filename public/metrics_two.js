@@ -13,8 +13,11 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
 
-//233 People
-const githubUsers = [10678845, 969070, 400613, 56451054, 9697957, 531549, 626066, 860441, 7191926, 4783748, 42279346, 5488274, 3010484, 7579932, 211174, 1316937, 2235636, 616364, 18098046, 1371871, 160236, 1392500, 13474811, 1917562, 240083, 19961678, 20483424, 31869252, 27706281, 31256040, 18563577, 228287, 43829046, 2149341, 8563002, 3688431, 2354618, 2672766, 4570265, 7716258, 8961614, 1392690, 6343707, 49409954, 11888634, 21042322, 238530, 1432131, 48732152, 16657086, 5544707, 842078, 179320, 9245, 624032, 16250652, 4391036, 12191552, 3211871, 14813370, 37934, 8175924, 9068391, 26553233, 3605123, 5384588, 824223, 2417005, 20542150, 2375201, 10716545, 12467170, 665326, 5572676, 26582655, 8861854, 3154053, 1553807, 36684410, 44975, 45485827, 4155401, 43789343, 1628592, 49322835, 18298474, 1721, 3289655, 3759507, 32469398, 111856, 4635763, 28762851, 8334459, 49734, 6147184, 4769135, 169368, 10507399, 14354868, 804338, 9759792, 639792, 13021026, 959972, 1319317, 11839002, 17034, 51006219, 23088984, 5566205, 2370200, 55609, 3990804, 45496592, 13542853, 56452299, 17415596, 5937188, 1841926, 23690283, 50713862, 753115, 372282, 850678, 1389937, 1022, 337855, 1348110, 7231485, 2972107, 1082754, 206364, 1613860, 4529021, 1540856, 883082, 4811571, 47536767, 1764944, 3766663, 22248033, 216412, 55852299, 1111611, 73870, 437242, 2335087, 5122391, 102201, 232107, 649249, 1452276, 5268, 18198771, 913631, 209641, 52258509, 40667, 4597180, 11690982, 99534, 31138589, 869251, 1111032, 13852571, 56452638, 368578, 1066253, 136118, 8669100, 29150348, 100155, 56452310, 50421366, 11047174, 54919691, 1649989, 1097316, 5347038, 555046, 2373151, 2019562, 8466666, 4384718, 5757567, 19397744, 19987655, 5479, 7804407, 12303, 48258069, 5292395, 596919, 50927477, 29488810, 478101, 6042948, 401051, 9065906, 26743133, 52238803, 6948042, 31747099, 624211, 9773485, 1987108, 41815, 4397978, 844249, 483300, 702990, 1886147, 821349, 8216808, 1759572, 141824, 44070836, 5298183, 20288217, 10249104, 32399754, 53845758, 682940, 19537619, 10226026, 8353656, 22875286, 20689178, 7097524, 37026441, 26017994];
+//233 Firebase Members
+const githubUsers = [10678845, 969070, 400613, 9697957, 531549, 626066, 860441, 7191926, 4783748, 42279346, 5488274, 3010484, 7579932, 211174, 1316937, 2235636, 616364, 18098046, 1371871, 160236, 1392500, 13474811, 1917562, 240083, 19961678, 20483424, 31869252, 27706281, 31256040, 18563577, 228287, 43829046, 2149341, 8563002, 3688431, 2354618, 2672766, 4570265, 7716258, 8961614, 1392690, 6343707, 49409954, 11888634, 21042322, 238530, 1432131, 48732152, 16657086, 5544707, 842078, 179320, 9245, 624032, 16250652, 4391036, 12191552, 3211871, 14813370, 37934, 8175924, 9068391, 26553233, 3605123, 5384588, 824223, 2417005, 20542150, 2375201, 10716545, 12467170, 665326, 5572676, 26582655, 8861854, 3154053, 1553807, 36684410, 44975, 45485827, 4155401, 43789343, 1628592, 49322835, 18298474, 1721, 3289655, 3759507, 32469398, 111856, 4635763, 28762851, 8334459, 49734, 6147184, 4769135, 169368, 10507399, 14354868, 804338, 9759792, 639792, 13021026, 959972, 1319317, 11839002, 17034, 51006219, 23088984, 5566205, 2370200, 55609, 3990804, 45496592, 13542853, 56452299, 17415596, 5937188, 1841926, 23690283, 50713862, 753115, 372282, 850678, 1389937, 1022, 337855, 1348110, 7231485, 2972107, 1082754, 206364, 1613860, 4529021, 1540856, 883082, 4811571, 47536767, 1764944, 3766663, 22248033, 216412, 55852299, 1111611, 73870, 437242, 2335087, 5122391, 102201, 232107, 649249, 1452276, 5268, 18198771, 913631, 209641, 52258509, 40667, 4597180, 11690982, 99534, 31138589, 869251, 1111032, 13852571, 368578, 1066253, 136118, 8669100, 29150348, 100155, 50421366, 11047174, 54919691, 1649989, 1097316, 5347038, 555046, 2373151, 2019562, 8466666, 4384718, 5757567, 19397744, 19987655, 5479, 7804407, 12303, 48258069, 5292395, 596919, 50927477, 29488810, 478101, 6042948, 401051, 9065906, 26743133, 52238803, 6948042, 31747099, 624211, 9773485, 1987108, 41815, 4397978, 844249, 483300, 702990, 1886147, 821349, 8216808, 1759572, 141824, 44070836, 5298183, 20288217, 10249104, 32399754, 53845758, 682940, 19537619, 10226026, 8353656, 22875286, 20689178, 7097524, 37026441, 26017994];
+//UID of aye,rom,riza
+const supportTeamUID = [56451054, 56452310, 56452638];
+const google_oos_bot_uid = 26440463;
 
 const issueEvents = ["labeled", "unlabeled", "commented", "closed", "opened"];
 const labelEvent = ["labeled", "unlabeled"];
@@ -211,7 +214,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Issue Number,POC Assignee,Date Logged,Reporter,Triage Start Date,Triage Start Rate,Triaged by,FR Date, FR Rate, FR by,First Need Info Date,First Need Info by,Triage Completion,Last label changed by,Date Closed,Type,API");
+    logReport("Issue Number,POC Assignee,Date Logged,Reporter, Reporter FB?,Triage Start Date,Triage Start Rate,Triaged by,Triage FB?,FR Date, FR Rate, FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion,Last label changed by,Completed FB?,Date Closed,Type,API");
     logReport("\n");
 
 
@@ -236,6 +239,11 @@ const letsGo = async () => {
             var first_need_info_date = ''
             var first_need_info_by = ''
             var triage_start_rate = '';
+            var reporter_fb = '';
+            var triage_fb = '';
+            var fr_fb = '';
+            var ni_fb = '';
+            var completed_fb = '';
 
             issue_number = myJson[i].number
             if (myJson[i].assignee != null) {
@@ -252,6 +260,7 @@ const letsGo = async () => {
             }
 
             reporter = myJson[i].user.login
+            reporter_fb = checkUserMembership(myJson[i].user.id, myJson[i].user.login);
 
             for (var xx = 0, lengths = myJson[i].labels.length; xx < lengths; xx++) {
                 api = api + myJson[i].labels[xx].name + ";";
@@ -298,10 +307,11 @@ const letsGo = async () => {
 
                     var difference_in_time2 = date2.getTime() - date3.getTime();
 
-                    if (checkUser && myTimeline[x].event == "labeled") {
+                    if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled") {
                         triage_start_date = formatDate(myTimeline[x].created_at);
                         triage_start_rate = msToTime(difference_in_time2)
                         triaged_by = myTimeline[x].actor.login;
+                        triage_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login)
                         break;
                     }
                 }
@@ -310,8 +320,9 @@ const letsGo = async () => {
                     var checkUser = githubUsers.includes(myTimeline[x].actor.id);
                     var isLabelled = labelEvent.includes(myTimeline[x].event);
 
-                    if (checkUser && isLabelled) {
+                    if (myTimeline[x].actor.id != google_oos_bot_uid && isLabelled) {
                         last_label_changed_by = myTimeline[x].actor.login;
+                        completed_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
                     }
                 }
 
@@ -335,11 +346,12 @@ const letsGo = async () => {
                     var date3 = new Date(created_at);
 
                     var difference_in_time2 = date2.getTime() - date3.getTime();
-                    if (checkUser && (myTimeline[x].event == "commented")) {
+                    if (myTimeline[x].actor.id != google_oos_bot_uid && (myTimeline[x].event == "commented")) {
 
                         fR_date = formatDate(myTimeline[x].created_at);
                         fr_rate = msToTime(difference_in_time2)
                         fR_by = myTimeline[x].actor.login;
+                        fr_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
                         break;
                     }
                 }
@@ -348,9 +360,10 @@ const letsGo = async () => {
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
                     var checkUser = githubUsers.includes(myTimeline[x].actor.id);
 
-                    if (checkUser && myTimeline[x].event == "labeled" && myTimeline[x].label.name == "needs-info") {
+                    if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled" && myTimeline[x].label.name == "needs-info") {
                         first_need_info_date = formatDate(myTimeline[x].created_at);
                         first_need_info_by = myTimeline[x].actor.login;
+                        ni_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
                         break;
                     }
                 }
@@ -359,16 +372,21 @@ const letsGo = async () => {
                     + poc_assignee + ','
                     + formatDate(date_logged) + ','
                     + reporter + ','
+                    + reporter_fb + ','
                     + triage_start_date + ','
                     + triage_start_rate + ','
                     + triaged_by + ','
+                    + triage_fb + ','
                     + fR_date + ','
                     + fr_rate + ','
                     + fR_by + ','
+                    + fr_fb + ','
                     + first_need_info_date + ','
                     + first_need_info_by + ','
+                    + ni_fb + ','
                     + triage_completion + ','
                     + last_label_changed_by + ','
+                    + completed_fb + ','
                     + date_closed + ','
                     + type + ','
                     + api + ',');
@@ -438,6 +456,19 @@ function downloadFile(urlData) {
         document.body.appendChild(a);
         a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
         document.body.removeChild(a);
+    }
+}
+
+function checkUserMembership(user_id, user_name) {
+    var checkFirebaseMembers = githubUsers.includes(user_id);
+    var checkFirebaseSupports = supportTeamUID.includes(user_id);
+
+    if (checkFirebaseMembers) {
+        return "Internal (Firebase Members)";
+    } else if (checkFirebaseSupports) {
+        return "Support Team (arel/riza/rommel)"
+    } else {
+        return "External (developers)";
     }
 }
 
