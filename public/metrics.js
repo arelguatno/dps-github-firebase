@@ -198,6 +198,11 @@ const letsGo = async () => {
             for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
                 var date_queryy = new Date(queryDate);
                 var created_att = new Date(myTimeline[y].created_at);
+
+                if (myTimeline[y].actor == null) {
+                    break;
+                }
+
                 var checkUser = githubUsers.includes(myTimeline[y].actor.id);
                 var checkEvents = issueEvents.includes(myTimeline[y].event);
 
