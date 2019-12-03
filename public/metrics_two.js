@@ -211,7 +211,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Issue Number,POC Assignee,Date Logged,Reporter,Triage Start Date,Triaged by,FR Date, FR Rate, FR by,Triage Completion,Last label changed by,Date Closed,Type,API");
+    logReport("Issue Number,POC Assignee,Date Logged,Reporter,Triage Start Date,Triage Start Rate,Triaged by,FR Date, FR Rate, FR by,First Need Info Date,First Need Info by,Triage Completion,Last label changed by,Date Closed,Type,API");
     logReport("\n");
 
 
@@ -233,6 +233,9 @@ const letsGo = async () => {
             var date_closed = '';
             var type = '';
             var api = '';
+            var first_need_info_date = ''
+            var first_need_info_by = ''
+            var triage_start_rate = '';
 
             issue_number = myJson[i].number
             if (myJson[i].assignee != null) {
@@ -296,7 +299,8 @@ const letsGo = async () => {
                     var difference_in_time2 = date2.getTime() - date3.getTime();
 
                     if (checkUser && myTimeline[x].event == "labeled") {
-                        triage_start_date = formatDate(myTimeline[x].created_at) + " (" + msToTime(difference_in_time2) + ")";
+                        triage_start_date = formatDate(myTimeline[x].created_at);
+                        triage_start_rate = msToTime(difference_in_time2)
                         triaged_by = myTimeline[x].actor.login;
                         break;
                     }
@@ -340,15 +344,29 @@ const letsGo = async () => {
                     }
                 }
 
+                // First need info
+                for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+                    var checkUser = githubUsers.includes(myTimeline[x].actor.id);
+
+                    if (checkUser && myTimeline[x].event == "labeled" && myTimeline[x].label.name == "needs-info") {
+                        first_need_info_date = formatDate(myTimeline[x].created_at);
+                        first_need_info_by = myTimeline[x].actor.login;
+                        break;
+                    }
+                }
+
                 logReport(issue_number + ','
                     + poc_assignee + ','
                     + formatDate(date_logged) + ','
                     + reporter + ','
                     + triage_start_date + ','
+                    + triage_start_rate + ','
                     + triaged_by + ','
                     + fR_date + ','
                     + fr_rate + ','
                     + fR_by + ','
+                    + first_need_info_date + ','
+                    + first_need_info_by + ','
                     + triage_completion + ','
                     + last_label_changed_by + ','
                     + date_closed + ','
