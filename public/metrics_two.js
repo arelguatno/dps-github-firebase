@@ -214,7 +214,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Issue Number,POC Assignee,Date Logged,Reporter, Reporter FB?,Triage Start Date,Triage Start Rate,Triaged by,Triage FB?,FR Date, FR Rate, FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion,Last label changed by,Completed FB?,Date Closed,Type,API");
+    logReport("Issue Number,POC Assignee,Date Logged,Reporter, Reporter FB?,Triage Start Date,Triage Start Rate,Triaged by,Triage FB?,FR Date, FR Rate, FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion,Triage Completion Rate,Last label changed by,Completed FB?,Date Closed,Type,API");
     logReport("\n");
 
 
@@ -244,6 +244,7 @@ const letsGo = async () => {
             var fr_fb = '';
             var ni_fb = '';
             var completed_fb = '';
+            var triage_completion_rate = '';
 
             issue_number = myJson[i].number
             if (myJson[i].assignee != null) {
@@ -251,7 +252,7 @@ const letsGo = async () => {
             } else {
                 poc_assignee = ""
             }
-            date_logged = myJson[i].created_at
+            date_logged = formatDate(myJson[i].created_at)
 
             if (myJson[i].state == "open") {
                 date_closed = ''
@@ -327,14 +328,20 @@ const letsGo = async () => {
                 }
 
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+                    var date2 = new Date(myTimeline[x].created_at);
+                    var date3 = new Date(created_at);
+
+                    var difference_in_time2 = date2.getTime() - date3.getTime();
 
                     if (myTimeline[x].event == "unlabeled" && myTimeline[x].label.name == "needs-info") {
                         triage_completion = formatDate(myTimeline[x].created_at);
+                        triage_completion_rate = msToTime(difference_in_time2);
                         break;
                     }
 
                     if (myTimeline[x].event == "unlabeled" && myTimeline[x].label.name == "needs-triage") {
                         triage_completion = formatDate(myTimeline[x].created_at);
+                        triage_completion_rate = msToTime(difference_in_time2);
                         break;
                     }
                 }
@@ -367,10 +374,10 @@ const letsGo = async () => {
                         break;
                     }
                 }
-
+                
                 logReport(issue_number + ','
                     + poc_assignee + ','
-                    + formatDate(date_logged) + ','
+                    + date_logged + ','
                     + reporter + ','
                     + reporter_fb + ','
                     + triage_start_date + ','
@@ -385,6 +392,7 @@ const letsGo = async () => {
                     + first_need_info_by + ','
                     + ni_fb + ','
                     + triage_completion + ','
+                    + triage_completion_rate + ','
                     + last_label_changed_by + ','
                     + completed_fb + ','
                     + date_closed + ','
