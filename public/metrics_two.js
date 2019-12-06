@@ -124,6 +124,21 @@ function msToTime(millisec) {
     }
 }
 
+
+function msToTimeToHours(millisec) {
+    var seconds = (millisec / 1000).toFixed(1);
+    var minutes = (millisec / (1000 * 60)).toFixed(1);
+    var hours = (millisec / (1000 * 60 * 60)).toFixed(1);
+
+    if (seconds < 60) {
+        return seconds + " sec";
+    } else if (minutes < 60) {
+        return minutes + " min";
+    } else {
+        return hours + " hrs";
+    }
+}
+
 // Get all issues
 // Documentation: https://developer.github.com/v3/issues/
 // Note GitHub's REST API v3 considers every pull request an issue.
@@ -310,7 +325,7 @@ const letsGo = async () => {
 
                     if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled") {
                         triage_start_date = formatDate(myTimeline[x].created_at);
-                        triage_start_rate = msToTime(difference_in_time2)
+                        triage_start_rate = msToTimeToHours(difference_in_time2)
                         triaged_by = myTimeline[x].actor.login;
                         triage_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login)
                         break;
@@ -335,13 +350,13 @@ const letsGo = async () => {
 
                     if (myTimeline[x].event == "unlabeled" && myTimeline[x].label.name == "needs-info") {
                         triage_completion = formatDate(myTimeline[x].created_at);
-                        triage_completion_rate = msToTime(difference_in_time2);
+                        triage_completion_rate = msToTimeToHours(difference_in_time2);
                         break;
                     }
 
                     if (myTimeline[x].event == "unlabeled" && myTimeline[x].label.name == "needs-triage") {
                         triage_completion = formatDate(myTimeline[x].created_at);
-                        triage_completion_rate = msToTime(difference_in_time2);
+                        triage_completion_rate = msToTimeToHours(difference_in_time2);
                         break;
                     }
                 }
@@ -356,7 +371,7 @@ const letsGo = async () => {
                     if (myTimeline[x].actor.id != google_oos_bot_uid && (myTimeline[x].event == "commented")) {
 
                         fR_date = formatDate(myTimeline[x].created_at);
-                        fr_rate = msToTime(difference_in_time2)
+                        fr_rate = msToTimeToHours(difference_in_time2)
                         fR_by = myTimeline[x].actor.login;
                         fr_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
                         break;
@@ -374,7 +389,7 @@ const letsGo = async () => {
                         break;
                     }
                 }
-                
+
                 logReport(issue_number + ','
                     + poc_assignee + ','
                     + date_logged + ','
