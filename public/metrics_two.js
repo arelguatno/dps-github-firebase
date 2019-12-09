@@ -368,8 +368,8 @@ const letsGo = async () => {
                     var date3 = new Date(created_at);
 
                     var difference_in_time2 = date2.getTime() - date3.getTime();
-                    if (myTimeline[x].actor.id != google_oos_bot_uid && (myTimeline[x].event == "commented")) {
 
+                    if ((myTimeline[x].actor.id != google_oos_bot_uid) && (myTimeline[x].event == "commented") && (myTimeline[x].actor.login != reporter)) {
                         fR_date = formatDate(myTimeline[x].created_at);
                         fr_rate = msToTimeToHours(difference_in_time2)
                         fR_by = myTimeline[x].actor.login;
