@@ -10,16 +10,40 @@
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-firestore.js"></script>
+
+  <style>
+    #wrapper {
+      max-width: 500px;
+      margin: auto;
+    }
+  </style>
 </head>
 
 <body>
-
-  <h2>DPS Github Report Card</h2>
-  <p><a href="/metrics_one.html">(1) Github Queue Status Update</a></p>
-  <p><a href="/metrics_two.html">(2) Github Metrics (First Reponse/FR/NI)</a></p>
-  <p><a href="/quick_note.html">(3) Quick Note</a></p>
-  <p><a href="/report_number_two.html">(4) Total numbers of Responses/Triage/Labels etc.</a></p>
-
+  <div id="wrapper">
+    <h1>DPS Github Reporting</h1>
+    <p><a href="/metrics_one.html">(1) Github Queue Status Update</a></p>
+    <p><a href="/metrics_two.html">(2) Github Metrics (First Reponse/FR/NI)</a></p>
+    <p><a href="/quick_note.html">(3) Quick Note</a></p>
+    <p><a href="/report_number_two.html">(4) Total numbers of Responses/Triage/Labels etc.</a></p>
+    <p><a href="/reporting_five.html">(5) A Read Me</a></p>
+  </div>
 </body>
+<script>
+  (function () {
+    var firebaseConfig = {
+      apiKey: "AIzaSyCUJ-yClOYyuzFb-8HjZ5b8bXF0LXRFPxE",
+      authDomain: "dps-github-firebase.firebaseapp.com",
+      databaseURL: "https://dps-github-firebase.firebaseio.com",
+      projectId: "dps-github-firebase",
+      storageBucket: "dps-github-firebase.appspot.com",
+      messagingSenderId: "1016091832357",
+      appId: "1:1016091832357:web:3a62cc3ff92579837ecfcc",
+      measurementId: "G-2P9B87LENM"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  })();
+</script>
 
 </html>

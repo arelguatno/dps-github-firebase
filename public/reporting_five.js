@@ -14,7 +14,7 @@ firebase.analytics();
 var db = firebase.firestore();
 
 //233 Firebase Members. Excepts bot UID and DPS support UID
-const githubUsers = [10678845, 969070, 400613, 9697957, 531549, 626066, 860441, 7191926, 4783748, 42279346, 5488274, 3010484, 7579932, 211174, 1316937, 2235636, 616364, 18098046, 1371871, 160236, 1392500, 13474811, 1917562, 240083, 19961678, 20483424, 31869252, 27706281, 31256040, 18563577, 228287, 43829046, 2149341, 8563002, 3688431, 2354618, 2672766, 4570265, 7716258, 8961614, 1392690, 6343707, 49409954, 11888634, 21042322, 238530, 1432131, 48732152, 16657086, 5544707, 842078, 179320, 9245, 624032, 16250652, 4391036, 12191552, 3211871, 14813370, 37934, 8175924, 9068391, 26553233, 3605123, 5384588, 824223, 2417005, 20542150, 2375201, 10716545, 12467170, 665326, 5572676, 26582655, 8861854, 3154053, 1553807, 36684410, 44975, 45485827, 4155401, 43789343, 1628592, 49322835, 18298474, 1721, 3289655, 3759507, 32469398, 111856, 4635763, 28762851, 8334459, 49734, 6147184, 4769135, 169368, 10507399, 14354868, 804338, 9759792, 639792, 13021026, 959972, 1319317, 11839002, 17034, 51006219, 23088984, 5566205, 2370200, 55609, 3990804, 45496592, 13542853, 56452299, 17415596, 5937188, 1841926, 23690283, 50713862, 753115, 372282, 850678, 1389937, 1022, 337855, 1348110, 7231485, 2972107, 1082754, 206364, 1613860, 4529021, 1540856, 883082, 4811571, 47536767, 1764944, 3766663, 22248033, 216412, 55852299, 1111611, 73870, 437242, 2335087, 5122391, 102201, 232107, 649249, 1452276, 5268, 18198771, 913631, 209641, 52258509, 40667, 4597180, 11690982, 99534, 31138589, 869251, 1111032, 13852571, 368578, 1066253, 136118, 8669100, 29150348, 100155, 50421366, 11047174, 54919691, 1649989, 1097316, 5347038, 555046, 2373151, 2019562, 8466666, 4384718, 5757567, 19397744, 19987655, 5479, 7804407, 12303, 48258069, 5292395, 596919, 50927477, 29488810, 478101, 6042948, 401051, 9065906, 26743133, 52238803, 6948042, 31747099, 624211, 9773485, 1987108, 41815, 4397978, 844249, 483300, 702990, 1886147, 821349, 8216808, 1759572, 141824, 44070836, 5298183, 20288217, 10249104, 32399754, 53845758, 682940, 19537619, 10226026, 8353656, 22875286, 20689178, 7097524, 37026441, 26017994];
+const githubUsers = [26440463, 10678845, 969070, 400613, 9697957, 531549, 626066, 860441, 7191926, 4783748, 42279346, 5488274, 3010484, 7579932, 211174, 1316937, 2235636, 616364, 18098046, 1371871, 160236, 1392500, 13474811, 1917562, 240083, 19961678, 20483424, 31869252, 27706281, 31256040, 18563577, 228287, 43829046, 2149341, 8563002, 3688431, 2354618, 2672766, 4570265, 7716258, 8961614, 1392690, 6343707, 49409954, 11888634, 21042322, 238530, 1432131, 48732152, 16657086, 5544707, 842078, 179320, 9245, 624032, 16250652, 4391036, 12191552, 3211871, 14813370, 37934, 8175924, 9068391, 26553233, 3605123, 5384588, 824223, 2417005, 20542150, 2375201, 10716545, 12467170, 665326, 5572676, 26582655, 8861854, 3154053, 1553807, 36684410, 44975, 45485827, 4155401, 43789343, 1628592, 49322835, 18298474, 1721, 3289655, 3759507, 32469398, 111856, 4635763, 28762851, 8334459, 49734, 6147184, 4769135, 169368, 10507399, 14354868, 804338, 9759792, 639792, 13021026, 959972, 1319317, 11839002, 17034, 51006219, 23088984, 5566205, 2370200, 55609, 3990804, 45496592, 13542853, 56452299, 17415596, 5937188, 1841926, 23690283, 50713862, 753115, 372282, 850678, 1389937, 1022, 337855, 1348110, 7231485, 2972107, 1082754, 206364, 1613860, 4529021, 1540856, 883082, 4811571, 47536767, 1764944, 3766663, 22248033, 216412, 55852299, 1111611, 73870, 437242, 2335087, 5122391, 102201, 232107, 649249, 1452276, 5268, 18198771, 913631, 209641, 52258509, 40667, 4597180, 11690982, 99534, 31138589, 869251, 1111032, 13852571, 368578, 1066253, 136118, 8669100, 29150348, 100155, 50421366, 11047174, 54919691, 1649989, 1097316, 5347038, 555046, 2373151, 2019562, 8466666, 4384718, 5757567, 19397744, 19987655, 5479, 7804407, 12303, 48258069, 5292395, 596919, 50927477, 29488810, 478101, 6042948, 401051, 9065906, 26743133, 52238803, 6948042, 31747099, 624211, 9773485, 1987108, 41815, 4397978, 844249, 483300, 702990, 1886147, 821349, 8216808, 1759572, 141824, 44070836, 5298183, 20288217, 10249104, 32399754, 53845758, 682940, 19537619, 10226026, 8353656, 22875286, 20689178, 7097524, 37026441, 26017994];
 //UID of aye,rom,riza
 const supportTeamUID = [56451054, 56452310, 56452638];
 const google_oos_bot_uid = 26440463;
@@ -22,6 +22,10 @@ const google_oos_bot_uid = 26440463;
 const issueEvents = ["labeled", "unlabeled", "commented", "closed", "opened"];
 const labelEvent = ["labeled", "unlabeled"];
 const issueState = ["closed", "reopened"];
+const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+];
+
 
 var oauth_token = ''
 var repo_name = '';
@@ -124,6 +128,23 @@ function msToTime(millisec) {
     }
 }
 
+function msToTimeDays(millisec) {
+    var seconds = (millisec / 1000).toFixed(1);
+    var minutes = (millisec / (1000 * 60)).toFixed(1);
+    var hours = (millisec / (1000 * 60 * 60)).toFixed(1);
+    var days = (millisec / (1000 * 60 * 60 * 24)).toFixed(1);
+
+    if (seconds < 60) {
+        return "";
+    } else if (minutes < 60) {
+        return "";
+    } else if (hours < 24) {
+        return "";
+    } else {
+        return days + " days"
+    }
+}
+
 
 function msToTimeToHours(millisec) {
     var seconds = (millisec / 1000).toFixed(1);
@@ -133,9 +154,9 @@ function msToTimeToHours(millisec) {
     if (seconds < 60) {
         return seconds + " sec";
     } else if (minutes < 60) {
-        return minutes + " min";
+        return "1.00";
     } else {
-        return hours + " hrs";
+        return Math.round(hours) + ".00";
     }
 }
 
@@ -167,33 +188,6 @@ const getEntireIssueList = async function (pageNo = 1) {
         return results;
     }
 };
-
-// // Get all issues
-// // Documentation: https://developer.github.com/v3/issues/
-// // Note GitHub's REST API v3 considers every pull request an issue.
-// const getListOfIssues = async function (pageNo = 1) {
-//     var url = 'https://api.github.com/orgs/firebase/members?page=' + `${pageNo}` + '';
-//     console.log(url);
-//     const apiResults = await fetch(url, {
-//         method: 'GET',
-//         headers: {
-//             'Authorization': oauth_token
-//         }
-//     }).then(resp => {
-//         return resp.json();
-//     });
-//     return apiResults;
-// }
-
-// const getEntireIssueList = async function (pageNo = 1) {
-//     const results = await getListOfIssues(pageNo);
-//     console.log("Retreiving data from API for page : " + pageNo);
-//     if (results.length > 0) {
-//         return results.concat(await getEntireIssueList(pageNo + 1));
-//     } else {
-//         return results;
-//     }
-// };
 
 
 // Get issue timeline
@@ -229,7 +223,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Issue Number,POC Assignee,Date Logged,Reporter, Reporter FB?,Triage Start Date,Triage Start Rate,Triaged by,Triage FB?,FR Date, FR Rate, FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion,Triage Completion Rate,Last label changed by,Completed FB?,Date Closed,Type,API");
+    logReport("Queue,Issue #,Date Created,Report Group,1st Label Date,1st Label Group,1st Label Duration,FR Date,FR Group,FR Duration,Last Label Date,Last Label Group,Last Label Duration,Closed Date,Closed Group,Closed Duration,Type,API,Has Need Info?,Number of Support Responses,Number of Engineers Responses,Number of External Developer Responses,Last Updated Date,Last Updated Group");
     logReport("\n");
 
 
@@ -237,51 +231,49 @@ const letsGo = async () => {
         var date_created = new Date(myJson[i].created_at);
         var date_queryy = new Date(queryDate);
         if (myJson[i].pull_request == undefined && (date_created.getTime() >= date_queryy.getTime())) { // only those Github issues
-            var issue_number = ''
-            var poc_assignee = '';
-            var date_logged = '';
-            var reporter = '';
-            var triage_start_date = '';
-            var triaged_by = '';
+            var queue = '';
+            var issue_number = '';
+            var date_created = '';
+            var report_group = '';
+            var first_label_date = '';
+            var first_label_group = '';
+            var first_label_duration = '';
             var fR_date = '';
-            var fr_rate = '';
-            var fR_by = '';
-            var triage_completion = '';
-            var last_label_changed_by = '';
-            var date_closed = '';
+            var fR_group = '';
+            var fR_duration = '';
+            var last_label_date = '';
+            var last_label_group = '';
+            var last_label_duration = '';
+            var closed_date = '';
+            var closed_group = '';
+            var closed_duration = '';
             var type = '';
             var api = '';
-            var first_need_info_date = ''
-            var first_need_info_by = ''
-            var triage_start_rate = '';
-            var reporter_fb = '';
-            var triage_fb = '';
-            var fr_fb = '';
-            var ni_fb = '';
-            var completed_fb = '';
-            var triage_completion_rate = '';
+            var has_need_info = '';
+            var number_of_support_responses = '';
+            var number_of_engineers_responses = '';
+            var number_of_external_developer_responses = '';
+            var last_updated_date = '';
+            var last_updated_group = '';
+            var reporter = '';
+            reporter = myJson[i].user.login
+
+
+            if (repo_name.indexOf("android") >= 0) {
+                queue = "Android";
+            } else if (repo_name.indexOf("ios") >= 0) {
+                queue = "iOS";
+            } else if (repo_name.indexOf("js") >= 0) {
+                queue = "JS";
+            }
 
             issue_number = myJson[i].number
-            if (myJson[i].assignee != null) {
-                poc_assignee = myJson[i].assignee.login
-            } else {
-                poc_assignee = ""
-            }
-            date_logged = formatDate(myJson[i].created_at)
-
-            if (myJson[i].state == "open") {
-                date_closed = ''
-            } else {
-                date_closed = formatDate(myJson[i].closed_at)
-            }
-
-            reporter = myJson[i].user.login
-            reporter_fb = checkUserMembership(myJson[i].user.id, myJson[i].user.login);
+            date_created = formatDate(myJson[i].created_at)
+            report_group = checkUserMembership(myJson[i].user.id)
 
             for (var xx = 0, lengths = myJson[i].labels.length; xx < lengths; xx++) {
                 api = api + myJson[i].labels[xx].name + ";";
             }
-
             var typesss = api.indexOf("feature");
             type = "issue";
             if (typesss >= 0) {
@@ -298,121 +290,113 @@ const letsGo = async () => {
                 type = "question";
             }
 
-            var has_need_info = api.indexOf("needs-info");
-
-            if (has_need_info >= 0) {
-                triage_completion = "";
-            }
-
-            const created_at = myJson[i].created_at
-            const state = myJson[i].state
-            const html_url = myJson[i].html_url
-
             const myTimeline = await getEntireTimeline(issue_number, pageNo = 1);
             var myTimelineKeys = Object.keys(myTimeline);
 
-            for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
-                // first label
+            for (var x = 0, lengths = myTimelineKeys.length; x < lengths; x++) {
+
+                // First Label
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
-                    var checkUser = githubUsers.includes(myTimeline[x].actor.id);
-                    var isLabelled = labelEvent.includes(myTimeline[x].event);
-
-
                     var date2 = new Date(myTimeline[x].created_at);
-                    var date3 = new Date(created_at);
+                    var date3 = new Date(date_created);
 
                     var difference_in_time2 = date2.getTime() - date3.getTime();
 
                     if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled") {
-                        triage_start_date = formatDate(myTimeline[x].created_at);
-                        triage_start_rate = msToTimeToHours(difference_in_time2)
-                        triaged_by = myTimeline[x].actor.login;
-                        triage_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login)
+                        first_label_date = formatDate(myTimeline[x].created_at);
+                        first_label_group = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
+                        first_label_duration = msToTimeToHours(difference_in_time2)
                         break;
                     }
                 }
 
-                for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
-                    var checkUser = githubUsers.includes(myTimeline[x].actor.id);
-                    var isLabelled = labelEvent.includes(myTimeline[x].event);
-
-                    if (myTimeline[x].actor.id != google_oos_bot_uid && isLabelled) {
-                        last_label_changed_by = myTimeline[x].actor.login;
-                        completed_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
-                    }
-                }
-
+                // First FR
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
                     var date2 = new Date(myTimeline[x].created_at);
-                    var date3 = new Date(created_at);
-
-                    var difference_in_time2 = date2.getTime() - date3.getTime();
-
-                    if (myTimeline[x].event == "unlabeled" && myTimeline[x].label.name == "needs-info") {
-                        triage_completion = formatDate(myTimeline[x].created_at);
-                        triage_completion_rate = msToTimeToHours(difference_in_time2);
-                        break;
-                    }
-
-                    if (myTimeline[x].event == "unlabeled" && myTimeline[x].label.name == "needs-triage") {
-                        triage_completion = formatDate(myTimeline[x].created_at);
-                        triage_completion_rate = msToTimeToHours(difference_in_time2);
-                        break;
-                    }
-                }
-
-                // first FR
-                for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
-                    var checkUser = githubUsers.includes(myTimeline[x].actor.id);
-                    var date2 = new Date(myTimeline[x].created_at);
-                    var date3 = new Date(created_at);
+                    var date3 = new Date(date_created);
 
                     var difference_in_time2 = date2.getTime() - date3.getTime();
 
                     if ((myTimeline[x].actor.id != google_oos_bot_uid) && (myTimeline[x].event == "commented") && (myTimeline[x].actor.login != reporter)) {
                         fR_date = formatDate(myTimeline[x].created_at);
-                        fr_rate = msToTimeToHours(difference_in_time2)
-                        fR_by = myTimeline[x].actor.login;
-                        fr_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
+                        fR_group = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
+                        fR_duration = msToTimeToHours(difference_in_time2);
                         break;
                     }
                 }
 
-                // First need info
+                // Last Label
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
-                    var checkUser = githubUsers.includes(myTimeline[x].actor.id);
+                    var isLabelled = labelEvent.includes(myTimeline[x].event);
+                    var date2 = new Date(myTimeline[x].created_at);
+                    var date3 = new Date(date_created);
 
-                    if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled" && myTimeline[x].label.name == "needs-info") {
-                        first_need_info_date = formatDate(myTimeline[x].created_at);
-                        first_need_info_by = myTimeline[x].actor.login;
-                        ni_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
-                        break;
+                    var difference_in_time2 = date2.getTime() - date3.getTime();
+
+                    if (myTimeline[x].actor.id != google_oos_bot_uid && isLabelled) {
+                        last_label_date = formatDate(myTimeline[x].created_at);
+                        last_label_group = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
+                        last_label_duration = msToTimeToHours(difference_in_time2);
                     }
+
+                    if (myTimeline[x].event == "closed") {
+                        closed_date = formatDate(myTimeline[x].created_at);
+                        closed_group = checkUserMembership(myTimeline[x].actor.id);
+                        closed_duration = msToTimeToHours(difference_in_time2);
+                    }
+
+                    if (myTimeline[x].event == "labeled") {
+                        if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].label.name == "needs-info") {
+                            has_need_info = "needs-info";
+                        }
+                    }
+
+                    if (myTimeline[x].actor.id != google_oos_bot_uid) {
+                        if ((myTimeline[x].event == "commented")) {
+                            if ((supportTeamUID.includes(myTimeline[x].actor.id))) {
+                                ++number_of_support_responses;
+                            }
+
+                            if ((githubUsers.includes(myTimeline[x].actor.id))) {
+                                ++number_of_engineers_responses;
+                            }
+
+                            if ((!githubUsers.includes(myTimeline[x].actor.id)) && (!supportTeamUID.includes(myTimeline[x].actor.id))) {
+                                ++number_of_external_developer_responses;
+                            }
+                        }
+                    }
+
+                    last_updated_date = formatDate(myTimeline[x].created_at);
+                    last_updated_group = checkUserMembership(myTimeline[x].actor.id);
+
                 }
 
-                logReport(issue_number + ','
-                    + poc_assignee + ','
-                    + date_logged + ','
-                    + reporter + ','
-                    + reporter_fb + ','
-                    + triage_start_date + ','
-                    + triage_start_rate + ','
-                    + triaged_by + ','
-                    + triage_fb + ','
+                logReport(queue + ','
+                    + issue_number + ','
+                    + date_created + ','
+                    + report_group + ','
+                    + first_label_date + ','
+                    + first_label_group + ','
+                    + first_label_duration + ','
                     + fR_date + ','
-                    + fr_rate + ','
-                    + fR_by + ','
-                    + fr_fb + ','
-                    + first_need_info_date + ','
-                    + first_need_info_by + ','
-                    + ni_fb + ','
-                    + triage_completion + ','
-                    + triage_completion_rate + ','
-                    + last_label_changed_by + ','
-                    + completed_fb + ','
-                    + date_closed + ','
+                    + fR_group + ','
+                    + fR_duration + ','
+                    + last_label_date + ','
+                    + last_label_group + ','
+                    + last_label_duration + ','
+                    + closed_date + ','
+                    + closed_group + ','
+                    + closed_duration + ','
                     + type + ','
-                    + api + ',');
+                    + api + ','
+                    + has_need_info + ','
+                    + number_of_support_responses + ','
+                    + number_of_engineers_responses + ','
+                    + number_of_external_developer_responses + ','
+                    + last_updated_date + ','
+                    + last_updated_group + ',');
+
                 break;
             }
             logReport("\n");
@@ -441,7 +425,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 function formatDate(s_date) {
     var date = new Date(s_date);
 
-    return date.getFullYear() + "-" + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + " " + formatAMPM(date)
+    return ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + "/" + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + "/" + date.getFullYear()
 }
 
 function formatAMPM(date) {
@@ -487,10 +471,11 @@ function checkUserMembership(user_id, user_name) {
     var checkFirebaseSupports = supportTeamUID.includes(user_id);
 
     if (checkFirebaseMembers) {
-        return "Internal (Firebase Members)";
+        return "Internal";
     } else if (checkFirebaseSupports) {
-        return "Support Team (arel/riza/rommel)"
+        return "Support"
     } else {
-        return "External (developers)";
+        return "External";
     }
 }
+
