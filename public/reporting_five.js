@@ -33,9 +33,10 @@ var queryDate = '';
 var countissue = 0;
 
 //What to sort results by. Can be either created, updated, comments. Default: created
-var rest_api_sort_param = "created";
 // Indicates the state of the issues to return. Can be either open, closed, or all. Default: open
 var rest_api_state_param = "all";
+
+var rest_api_sort_param = "created";
 
 document.getElementById("startReport").addEventListener("click", myFunction);
 document.getElementById('logout').style.visibility = 'hidden';
@@ -52,7 +53,8 @@ function logOut() {
 }
 
 function myFunction() {
-    repo_name = document.getElementById("repo").value
+    repo_name = document.getElementById("repo").value;
+    rest_api_sort_param = document.getElementById("sort_by").value;
     rest_api_state_param = document.getElementById("state").value;
     queryDate = document.getElementById("datepicker").value;
     document.getElementById("startReport").disabled = true;
@@ -165,7 +167,6 @@ function msToTimeToHours(millisec) {
 // Note GitHub's REST API v3 considers every pull request an issue.
 const getListOfIssues = async function (pageNo = 1) {
     var url = 'https://api.github.com/repos/firebase/' + repo_name + '/issues?sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
-    // var url = 'https://api.github.com/repos/firebase/' + repo_name + '/issues?since=' + queryDate + '&sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
     console.log(url);
     const apiResults = await fetch(url, {
         method: 'GET',

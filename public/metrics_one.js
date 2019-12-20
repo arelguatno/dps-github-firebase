@@ -156,6 +156,7 @@ const getEntireIssueList = async function (pageNo = 1) {
 // Documentation: https://developer.github.com/v3/issues/timeline/
 const getIssueTimeline = async function (issue_number, pageNo = 1) {
     var url = 'https://api.github.com/repos/firebase/' + repo_name + '/issues/' + issue_number + '/timeline?page=' + `${pageNo}` + '';
+    console.log(url);
     const apiResults = await fetch(url, {
         method: 'GET',
         headers: {
