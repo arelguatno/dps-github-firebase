@@ -14,7 +14,7 @@ firebase.analytics();
 var db = firebase.firestore();
 
 //UID of aye,rom,riza
-const githubUsers = [56451054, 56452310, 56452638];
+const githubUsers = [56451054, 56452310, 56452638, 58971522];
 
 const issueEvents = ["labeled", "unlabeled", "commented", "closed", "opened"];
 const labelEvent = ["labeled", "unlabeled"];
@@ -127,7 +127,7 @@ function msToTime(millisec) {
 // Documentation: https://developer.github.com/v3/issues/
 // Note GitHub's REST API v3 considers every pull request an issue.
 const getListOfIssues = async function (pageNo = 1) {
-    var url = 'https://api.github.com/repos/firebase/' + repo_name + '/issues?since=' + queryDate + '&sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
+    var url = 'https://api.github.com/repos/' + repo_name + '/issues?since=' + queryDate + '&sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
     // console.log(url);
     const apiResults = await fetch(url, {
         method: 'GET',
@@ -155,7 +155,7 @@ const getEntireIssueList = async function (pageNo = 1) {
 // Get issue timeline
 // Documentation: https://developer.github.com/v3/issues/timeline/
 const getIssueTimeline = async function (issue_number, pageNo = 1) {
-    var url = 'https://api.github.com/repos/firebase/' + repo_name + '/issues/' + issue_number + '/timeline?page=' + `${pageNo}` + '';
+    var url = 'https://api.github.com/repos/' + repo_name + '/issues/' + issue_number + '/timeline?page=' + `${pageNo}` + '';
     console.log(url);
     const apiResults = await fetch(url, {
         method: 'GET',
@@ -236,7 +236,7 @@ const letsGo = async () => {
                         if (checkUser2 && (created_att.getTime() >= date_queryy.getTime()) && checkEvents && (myTimeline[x].event == "commented")) {
                             if ((date2.getTime() >= date_queryy.getTime()) && only_updated != "all") {
                                 logReport(myTimeline[x].user.login + " " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
-                            } else if(only_updated == "all") {
+                            } else if (only_updated == "all") {
                                 logReport(myTimeline[x].user.login + " " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
                             }
                         }
@@ -262,7 +262,7 @@ const letsGo = async () => {
 
                             if ((date2.getTime() >= date_queryy.getTime()) && only_updated != "all") {
                                 logReport(myTimeline[c].actor.login + " " + myTimeline[c].event + " '" + myTimeline[c].label.name + "' " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
-                            } else if(only_updated == "all") {
+                            } else if (only_updated == "all") {
                                 logReport(myTimeline[c].actor.login + " " + myTimeline[c].event + " '" + myTimeline[c].label.name + "' " + formatDate(date2) + "/" + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
                             }
 
@@ -287,10 +287,10 @@ const letsGo = async () => {
 
                             if ((date2.getTime() >= date_queryy.getTime()) && only_updated != "all") {
                                 logReport(myTimeline[d].actor.login + " " + myTimeline[d].event + " " + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
-                            }else if(only_updated == "all") {
+                            } else if (only_updated == "all") {
                                 logReport(myTimeline[d].actor.login + " " + myTimeline[d].event + " " + msToTime(difference_in_time) + " ago" + " (" + msToTime(difference_in_time2) + ")");
                             }
-                            
+
                         }
                     }
 
