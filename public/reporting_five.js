@@ -347,7 +347,7 @@ const letsGo = async () => {
                     }
 
                     if (myTimeline[x].event == "labeled") {
-                        if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].label.name == "needs-info") {
+                        if (myTimeline[x].actor.id != google_oos_bot_uid && (myTimeline[x].label.name == "needs-info" || myTimeline[x].label.name == "needs info")) {
                             has_need_info = "needs-info";
                         }
                     }

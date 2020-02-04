@@ -331,7 +331,7 @@ const letsGo = async () => {
                                 ++number_of_type_labeling;
                             }
 
-                            if (labelName.indexOf("needs-info") >= 0) {
+                            if (labelName.indexOf("needs-info") >= 0 || labelName.indexOf("needs info") >= 0) {
                                 ++number_of_need_info_Labeling;
                             }
                         }

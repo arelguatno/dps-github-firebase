@@ -299,8 +299,9 @@ const letsGo = async () => {
             }
 
             var has_need_info = api.indexOf("needs-info");
+            var has_need_info2 = api.indexOf("needs info");
 
-            if (has_need_info >= 0) {
+            if (has_need_info >= 0 || has_need_info2 >=0) {
                 triage_completion = "";
             }
 
@@ -348,7 +349,7 @@ const letsGo = async () => {
 
                     var difference_in_time2 = date2.getTime() - date3.getTime();
 
-                    if (myTimeline[x].event == "unlabeled" && myTimeline[x].label.name == "needs-info") {
+                    if (myTimeline[x].event == "unlabeled" && (myTimeline[x].label.name == "needs-info" || myTimeline[x].label.name == "needs info")) {
                         triage_completion = formatDate(myTimeline[x].created_at);
                         triage_completion_rate = msToTimeToHours(difference_in_time2);
                         break;
@@ -382,7 +383,7 @@ const letsGo = async () => {
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
                     var checkUser = githubUsers.includes(myTimeline[x].actor.id);
 
-                    if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled" && myTimeline[x].label.name == "needs-info") {
+                    if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled" && (myTimeline[x].label.name == "needs-info" || myTimeline[x].label.name == "needs info")) {
                         first_need_info_date = formatDate(myTimeline[x].created_at);
                         first_need_info_by = myTimeline[x].actor.login;
                         ni_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
