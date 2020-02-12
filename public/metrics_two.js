@@ -229,7 +229,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Issue Number,POC Assignee,Date Logged,Reporter, Reporter FB?,Triage Start Date,Triage Start Rate,Triaged by,Triage FB?,FR Date, FR Rate, FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion,Triage Completion Rate,Last label changed by,Completed FB?,Date Closed,Type,API");
+    logReport("Issue Number,POC Assignee,Date Logged,Reporter, Reporter FB?,Triage Start Date,Triage Start Rate,Triaged by,Triage FB?,FR Date, FR Rate, FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion,Triage Completion Rate,Last label changed by,Completed FB?,Date Closed,Closed by,Type,API");
     logReport("\n");
 
 
@@ -260,6 +260,7 @@ const letsGo = async () => {
             var ni_fb = '';
             var completed_fb = '';
             var triage_completion_rate = '';
+            var closed_by = '';
 
             issue_number = myJson[i].number
             if (myJson[i].assignee != null) {
@@ -341,6 +342,10 @@ const letsGo = async () => {
                         last_label_changed_by = myTimeline[x].actor.login;
                         completed_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
                     }
+                    // closed_by
+                    if(myTimeline[x].event == "closed"){
+                        closed_by = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
+                    }
                 }
 
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
@@ -412,6 +417,7 @@ const letsGo = async () => {
                     + last_label_changed_by + ','
                     + completed_fb + ','
                     + date_closed + ','
+                    + closed_by + ','
                     + type + ','
                     + api + ',');
                 break;

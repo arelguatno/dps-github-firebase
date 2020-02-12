@@ -472,11 +472,11 @@ function checkUserMembership(user_id, user_name) {
     var checkFirebaseSupports = supportTeamUID.includes(user_id);
 
     if (checkFirebaseMembers) {
-        return "Internal";
+        return "Internal (Firebase Members)";
     } else if (checkFirebaseSupports) {
-        return "Support"
+        return "Support Team (arel/riza/rommel)"
     } else {
-        return "External";
+        return "External (developers)";
     }
 }
 

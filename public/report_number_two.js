@@ -223,7 +223,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Queue,Issue #,Date Logged, Engineer's Initial Response Time (hrs),Support's Initial Response Time (hrs),Total Number of Responses,Number of Support Responses,Number of Engineers Responses,Number of External Developer Responses,Number of Triage Activity,Number of api labeling,Number of type labeling,Number of Need Info labeling,Closed Date,Close Time (hrs),Close Time (days),repro,response,close,month logged");
+    logReport("Queue,Issue #,Date Logged, Engineer's Initial Response Time (hrs),Support's Initial Response Time (hrs),Total Number of Responses,Number of Support Responses,Number of Engineers Responses,Number of External Developer Responses,Number of Triage Activity,Number of api labeling,Number of type labeling,Number of Need Info labeling,Closed Date,Close Time (hrs),Close Time (days),Closed by,repro,response,close,month logged");
     logReport("\n");
 
 
@@ -251,6 +251,7 @@ const letsGo = async () => {
             var month_Logged = '';
             var reporter = ''
             var engineer_initial_response_time = '';
+            var closed_by = '';
 
             issue_number = myJson[i].number
             date_logged = formatDate(myJson[i].created_at)
@@ -336,6 +337,11 @@ const letsGo = async () => {
                             }
                         }
                     }
+
+                    // closed_by
+                    if (myTimeline[x].event == "closed") {
+                        closed_by = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
+                    }
                 }
 
 
@@ -355,6 +361,7 @@ const letsGo = async () => {
                     + closed_date + ','
                     + close_time_hrs + ','
                     + close_time_days + ','
+                    + closed_by + ','
                     + repro + ','
                     + response + ','
                     + close + ','
