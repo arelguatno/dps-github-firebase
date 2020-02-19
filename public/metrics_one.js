@@ -45,6 +45,14 @@ function logOut() {
 }
 
 function myFunction() {
+    // const repro_message = await getIssueTriageCompletionDate("android", "1242");
+    // var milliSeconds = Date.parse(repro_message);
+    // console.log(formatDate(repro_message));
+
+    // var milliSeconds = Date.parse(triage_completion_new);
+    // triage_completion_rate_new = msToTimeToHours(milliSeconds);
+
+
     repo_name = document.getElementById("repo").value
     rest_api_sort_param = document.getElementById("sort").value;
     rest_api_state_param = document.getElementById("state").value;
@@ -73,7 +81,6 @@ function myFunction() {
     } else {
         authLogin();
     }
-
 }
 
 function logReport(logValue) {
@@ -217,8 +224,40 @@ const letsGo = async () => {
                     var date2 = new Date(created_at);
                     var difference_in_time = date1.getTime() - date2.getTime();
                     // logReport("<b>Date created</b>: " + formatDate(created_at) + " (" + msToTime(difference_in_time) + " ago)");
+
+                    const response = await getIssueStatus(getRepoName(repo_name), issue_number.toString());
+                    var issueStatus = "-";
+                    var needInfo = "-";
+                    var needRepro = "-";
+
+                    if (response !== null) {
+
+                        if (response.status !== undefined) {
+                            issueStatus = response.status;
+                        }
+
+                        if (response.needInfo !== undefined) {
+                            if (response.needInfo) {
+                                needInfo = "Yes"
+                            } else {
+                                needInfo = "No"
+                            }
+                        }
+
+                        if (response.needRepro !== undefined) {
+                            if (response.needRepro) {
+                                needRepro = "Yes"
+                            } else {
+                                needRepro = "No"
+                            }
+                        }
+                    }
+
                     logReport("<b>Date created</b>: " + formatDate(created_at));
-                    logReport("State: " + state);
+                    // logReport("State: " + state);
+                    logReport("<b>Status</b>: " + issueStatus);
+                    logReport("<b>Need Info</b>: " + needInfo);
+                    logReport("<b>Need Repro</b>: " + needRepro);
                     logReport("\n");
                     logReport("<b>Responses:</b>");
 
@@ -292,6 +331,7 @@ const letsGo = async () => {
                             }
 
                         }
+
                     }
 
                     logReport("\n");

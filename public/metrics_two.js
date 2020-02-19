@@ -229,7 +229,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Issue Number,POC Assignee,Date Logged,Reporter, Reporter FB?,Triage Start Date,Triage Start Rate,Triaged by,Triage FB?,FR Date, FR Rate, FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion,Triage Completion Rate,Last label changed by,Completed FB?,Date Closed,Closed by,Type,API");
+    logReport("Issue Number,POC Assignee,Date Logged,Reporter, Reporter FB?,Triage Start Date,Triage Start Rate,Triaged by,Triage FB?,FR Date, FR Rate, FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion(old),Triage Completion Rate(old),Triage Completion(new),Triage Completion Rate(new),Last label changed by,Completed FB?,Date Closed,Closed by,Type,API");
     logReport("\n");
 
 
@@ -261,6 +261,10 @@ const letsGo = async () => {
             var completed_fb = '';
             var triage_completion_rate = '';
             var closed_by = '';
+            var triage_completion_new = '';
+            var triage_completion_rate_new = '';
+
+
 
             issue_number = myJson[i].number
             if (myJson[i].assignee != null) {
@@ -302,7 +306,7 @@ const letsGo = async () => {
             var has_need_info = api.indexOf("needs-info");
             var has_need_info2 = api.indexOf("needs info");
 
-            if (has_need_info >= 0 || has_need_info2 >=0) {
+            if (has_need_info >= 0 || has_need_info2 >= 0) {
                 triage_completion = "";
             }
 
@@ -312,6 +316,16 @@ const letsGo = async () => {
 
             const myTimeline = await getEntireTimeline(issue_number, pageNo = 1);
             var myTimelineKeys = Object.keys(myTimeline);
+
+
+            triage_completion_new_format = await getIssueTriageCompletionDate(getRepoName(repo_name), issue_number.toString());
+            if (triage_completion_new_format != "") {
+                triage_completion_new = formatDate(triage_completion_new_format);
+                var date2 = new Date(triage_completion_new_format);
+                var date3 = new Date(created_at);
+                var difference_in_time = date2.getTime() - date3.getTime();
+                triage_completion_rate_new = msToTimeToHours(difference_in_time);
+            }
 
             for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
                 // first label
@@ -343,7 +357,7 @@ const letsGo = async () => {
                         completed_fb = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
                     }
                     // closed_by
-                    if(myTimeline[x].event == "closed"){
+                    if (myTimeline[x].event == "closed") {
                         closed_by = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
                     }
                 }
@@ -414,6 +428,8 @@ const letsGo = async () => {
                     + ni_fb + ','
                     + triage_completion + ','
                     + triage_completion_rate + ','
+                    + triage_completion_new + ','
+                    + triage_completion_rate_new + ','
                     + last_label_changed_by + ','
                     + completed_fb + ','
                     + date_closed + ','

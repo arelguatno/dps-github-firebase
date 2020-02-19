@@ -223,7 +223,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Queue,Issue #,Date Logged, Engineer's Initial Response Time (hrs),Support's Initial Response Time (hrs),Total Number of Responses,Number of Support Responses,Number of Engineers Responses,Number of External Developer Responses,Number of Triage Activity,Number of api labeling,Number of type labeling,Number of Need Info labeling,Closed Date,Close Time (hrs),Close Time (days),Closed by,repro,response,close,month logged");
+    logReport("Queue,Issue #,Date Logged, Engineer's Initial Response Time (hrs),Support's Initial Response Time (hrs),Total Number of Responses,Number of Support Responses,Number of Engineers Responses,Number of External Developer Responses,Number of Triage Activity,Number of api labeling,Number of type labeling,Number of Need Info labeling,Closed Date,Close Time (hrs),Close Time (days),Closed by,Repro,Response,Close,Month Logged");
     logReport("\n");
 
 
@@ -257,6 +257,8 @@ const letsGo = async () => {
             date_logged = formatDate(myJson[i].created_at)
             month_Logged = formatDateMonth(myJson[i].created_at);
             reporter = myJson[i].user.login
+
+            repro = await getIssueReproMessage(getRepoName(repo_name), issue_number.toString());
 
             if (myJson[i].state == "open") {
                 closed_date = ''
