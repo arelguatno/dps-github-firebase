@@ -52,11 +52,10 @@ function myFunction() {
     // var milliSeconds = Date.parse(triage_completion_new);
     // triage_completion_rate_new = msToTimeToHours(milliSeconds);
 
-
     repo_name = document.getElementById("repo").value
     rest_api_sort_param = document.getElementById("sort").value;
     rest_api_state_param = document.getElementById("state").value;
-    queryDate = document.getElementById("datepicker").value;
+    queryDate = document.getElementById("datepicker").value + " 00:00:00";
     only_updated = document.getElementById("allrecords").value;
 
     document.getElementById("startReport").disabled = true;
@@ -213,8 +212,7 @@ const letsGo = async () => {
 
                 var checkUser = githubUsers.includes(myTimeline[y].actor.id);
                 var checkEvents = issueEvents.includes(myTimeline[y].event);
-
-                // Check if user has contribution first
+                
                 if (checkUser && (created_att.getTime() >= date_queryy.getTime()) && checkEvents) {
                     countissue = countissue + 1;
 

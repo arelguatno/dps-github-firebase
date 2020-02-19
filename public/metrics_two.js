@@ -50,7 +50,7 @@ function logOut() {
 function myFunction() {
     repo_name = document.getElementById("repo").value
     rest_api_state_param = document.getElementById("state").value;
-    queryDate = document.getElementById("datepicker").value;
+    queryDate = document.getElementById("datepicker").value + " 00:00:00";
     document.getElementById("startReport").disabled = true;
 
     var user = firebase.auth().currentUser;
