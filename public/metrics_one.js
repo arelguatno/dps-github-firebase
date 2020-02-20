@@ -1,20 +1,7 @@
-var firebaseConfig = {
-    apiKey: "AIzaSyCUJ-yClOYyuzFb-8HjZ5b8bXF0LXRFPxE",
-    authDomain: "dps-github-firebase.firebaseapp.com",
-    databaseURL: "https://dps-github-firebase.firebaseio.com",
-    projectId: "dps-github-firebase",
-    storageBucket: "dps-github-firebase.appspot.com",
-    messagingSenderId: "1016091832357",
-    appId: "1:1016091832357:web:3a62cc3ff92579837ecfcc",
-    measurementId: "G-2P9B87LENM"
-};
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
-
-//UID of aye,rom,riza
-const githubUsers = [56451054, 56452310, 56452638, 58971522];
 
 const issueEvents = ["labeled", "unlabeled", "commented", "closed", "opened"];
 const labelEvent = ["labeled", "unlabeled"];
@@ -210,7 +197,7 @@ const letsGo = async () => {
                     break;
                 }
 
-                var checkUser = githubUsers.includes(myTimeline[y].actor.id);
+                var checkUser = supportTeamUID.includes(myTimeline[y].actor.id);
                 var checkEvents = issueEvents.includes(myTimeline[y].event);
                 
                 if (checkUser && (created_att.getTime() >= date_queryy.getTime()) && checkEvents) {
@@ -264,7 +251,7 @@ const letsGo = async () => {
                         var date1 = new Date();
                         var date2 = new Date(myTimeline[x].created_at);
                         var date3 = new Date(created_at);
-                        var checkUser2 = githubUsers.includes(myTimeline[x].actor.id);
+                        var checkUser2 = supportTeamUID.includes(myTimeline[x].actor.id);
 
                         var difference_in_time = date1.getTime() - date2.getTime();
 
@@ -285,7 +272,7 @@ const letsGo = async () => {
 
                     // Log labels
                     for (var c = 0, length3 = myTimelineKeys.length; c < length3; c++) {
-                        var checkUser = githubUsers.includes(myTimeline[c].actor.id);
+                        var checkUser = supportTeamUID.includes(myTimeline[c].actor.id);
                         var isLabelled = labelEvent.includes(myTimeline[c].event);
 
                         if (checkUser && isLabelled) {
@@ -310,7 +297,7 @@ const letsGo = async () => {
 
                     // Log issue status, re-open case
                     for (var d = 0, length3 = myTimelineKeys.length; d < length3; d++) {
-                        var checkUser = githubUsers.includes(myTimeline[d].actor.id);
+                        var checkUser = supportTeamUID.includes(myTimeline[d].actor.id);
                         var state_change = issueState.includes(myTimeline[d].event);
 
                         if (checkUser && state_change) {
