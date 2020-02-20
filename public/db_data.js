@@ -68,7 +68,7 @@ function getRepoName(repo_name) {
     } else if (repo_name == "firebase/quickstart-unity") {
         return "quickstart-unity"
     } else if (repo_name == "googlesamples/unity-jar-resolver") {
-        return "quickstart-resolver"
+        return "unity-jar-resolver"
     } else {
         return "unkown"
     }
