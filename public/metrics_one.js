@@ -240,7 +240,7 @@ const letsGo = async () => {
 
                     logReport("<b>Date created</b>: " + formatDate(created_at));
                     // logReport("State: " + state);
-                    logReport("<b>Status</b>: " + issueStatus);
+                    logReport("<b>Status</b>: " + issueStatus + " / " + state);
                     logReport("<b>Need Info</b>: " + needInfo);
                     logReport("<b>Need Repro</b>: " + needRepro);
                     logReport("\n");

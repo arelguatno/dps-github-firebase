@@ -459,6 +459,8 @@ function checkUserMembership(user_id, user_name) {
         return "Internal (Firebase Members)";
     } else if (checkFirebaseSupports) {
         return "Support Team (arel/riza/rommel)"
+    } else if (user_id == google_oos_bot_uid) {
+        return "Google Bot"
     } else {
         return "External (developers)";
     }
