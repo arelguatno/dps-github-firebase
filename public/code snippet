@@ -1,0 +1,47 @@
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    processDeepLink(intent)
+
+    ...
+}
+
+override fun onNewIntent(intent: Intent) {
+    super.onNewIntent(intent)
+    processDeepLink(intent)
+}
+
+private fun processDeepLink(intent: Intent) {
+    this.intent = intent
+    Firebase.dynamicLinks
+        .getDynamicLink(intent)
+        .addOnSuccessListener { pendingDynamicLinkData ->
+            /* This gets the long dynamic link. E.g.
+
+              https://wecenergygroup.page.link/?link=https://www.somelink.com&apn=com.wecenergygroup.wps&afl=https://www.somelink.com */
+            val dynamicLinkUri = pendingDynamicLinkData?.link
+            Timber.i("Processing deep link with URI $dynamicLinkUri")
+            if (dynamicLinkUri == null) {
+                return@addOnSuccessListener
+            }
+
+
+            /* This used to get the short dynamic link. E.g.
+
+              https://wecenergygroupqa.page.link/somePath-WPS-my-bill. Now
+
+              it matches the long dynamic link */
+            val intentUri = intent.data
+            val deepLinkPrefix = getString(R.string.deeplink_prefix) // E.g. “WPS-“           
+
+            val deepLinkPath =
+                intentUri?.pathSegments?.lastOrNull()?.substringAfter(deepLinkPrefix)
+            val deepLink = DeepLink(deepLinkPath)
+            // This will be null/NONE when we return from login. Don't override Intent in that case.
+            if (deepLink != DeepLink.NONE) {
+                this.intent = intent.putDeepLink(deepLink)
+            }
+        }
+        .addOnFailureListener { e ->
+            Timber.w(e, "FDL error!")
+        }
+}

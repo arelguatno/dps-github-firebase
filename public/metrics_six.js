@@ -3,7 +3,6 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
 
-
 var oauth_token = ''
 var repo_name = '';
 var queryDate = '';
@@ -141,8 +140,7 @@ function msToTimeToHours(millisec) {
 // Documentation: https://developer.github.com/v3/issues/
 // Note GitHub's REST API v3 considers every pull request an issue.
 const getListOfIssues = async function (pageNo = 1) {
-    var url = 'https://api.github.com/repos/' + repo_name + '/issues?sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
-    // var url = 'https://api.github.com/repos/firebase/' + repo_name + '/issues?since=' + queryDate + '&sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
+    var url = 'https://api.github.com/repos/' + repo_name + '/issues?since=' + queryDate + '&sort=created&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
     console.log(url);
     const apiResults = await fetch(url, {
         method: 'GET',
@@ -159,7 +157,6 @@ const getListOfIssues = async function (pageNo = 1) {
 const getEntireIssueList = async function (pageNo = 1) {
     const results = await getListOfIssues(pageNo);
     console.log("Retreiving data from API for page : " + pageNo);
-    document.getElementById('report_start').innerHTML = "Retreiving data from API for page : " + pageNo;
     if (results.length > 0) {
         return results.concat(await getEntireIssueList(pageNo + 1));
     } else {
@@ -174,7 +171,6 @@ const getIssueTimeline = async function (issue_number, pageNo = 1) {
     // issue_number = '1006';
     var url = 'https://api.github.com/repos/' + repo_name + '/issues/' + issue_number + '/timeline?page=' + `${pageNo}` + '';
     console.log(url);
-    document.getElementById('report_start').innerHTML = "Getting timelines of issue#" +issue_number;
     const apiResults = await fetch(url, {
         method: 'GET',
         headers: {
@@ -202,39 +198,26 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Queue,Issue #,Date Logged, Engineer's Initial Response Time (hrs),Support's Initial Response Time (hrs),Total Number of Responses,Number of Support Responses,Number of Engineers Responses,Number of External Developer Responses,Number of Triage Activity,Number of api labeling,Number of type labeling,Number of Need Info labeling,Closed Date,Close Time (hrs),Close Time (days),Closed by,Repro,Response,Close,Month Logged");
+    logReport("Queue,Issue #,Date Logged,Status,Number of Suppport Labeled/Unlabeled,Number of Support Responses, Closed By, Group");
     logReport("\n");
 
 
     for (var i = 0, length = keys.length; i < length; i++) {
         var date_created = new Date(myJson[i].created_at);
         var date_queryy = new Date(queryDate);
-        if (myJson[i].pull_request == undefined && (date_created.getTime() >= date_queryy.getTime())) { // only those Github issues
-            var issue_number = '';
-            var date_logged = '';
-            var initial_response_time_hrs = '';
-            var total_number_of_responses = 0;
-            var number_of_support_responses = 0;
-            var number_of_engineers_responses = 0;
-            var number_of_external_developer_responses = 0;
-            var number_of_triage_activity = 0;
-            var number_of_api_labeling = 0;
-            var number_of_type_labeling = 0;
-            var number_of_need_info_Labeling = 0;
-            var closed_date = '';
-            var close_time_hrs = '';
-            var close_time_days = '';
-            var repro = '';
-            var response = '';
-            var close = '';
-            var month_Logged = '';
-            var reporter = ''
-            var engineer_initial_response_time = '';
-            var closed_by = '';
-            var queue_pr = '';
-            var issue_number_pr = '';
 
-            issue_number = myJson[i].number
+        if (myJson[i].pull_request == undefined) { // only those Github issues
+
+            var issue_number, issue_number_pr = '';
+            var date_logged = '';
+            var number_of_support_responses = 0;
+            var number_of_support_labels = 0;
+            var closed_by = '';
+            var issue_status = '';
+            var queue_pr = '';
+            var group = '';
+
+            issue_number = myJson[i].number;
             issue_number_pr = issueNumberWithHyperLink(myJson[i].html_url, issue_number);
             queue_pr = getRepoName(repo_name);
 
@@ -248,114 +231,73 @@ const letsGo = async () => {
                 closed_date = ''
                 close_time_hrs = '';
                 close = 'open'
+                issue_status = 'Open'
+
+                for (var x = 0, length2 = myJson[i].labels.length; x < length2; x++) {
+                    if (myJson[i].labels[x].name == 'needs-info') {
+                        issue_status = "Needs Info"
+                    }
+                    if (myJson[i].labels[x].name == 'needs-attention') {
+                        issue_status = "Needs Attention"
+                    }
+                }
             } else {
-                closed_date = formatDate(myJson[i].closed_at)
-
-                var date2 = new Date(myJson[i].closed_at);
-                var date3 = new Date(myJson[i].created_at);
-
-                var difference_in_time2 = date2.getTime() - date3.getTime();
-                close_time_hrs = msToTimeToHours(difference_in_time2);
-                close = msToTime(difference_in_time2);
-                close_time_days = msToTimeDays(difference_in_time2);
+                issue_status = 'Closed'
             }
-
-            const created_at = myJson[i].created_at
-            const html_url = myJson[i].html_url
 
             const myTimeline = await getEntireTimeline(issue_number, pageNo = 1);
             var myTimelineKeys = Object.keys(myTimeline);
 
             for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
 
-                // Initial Response 
-                for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
-                    var date2 = new Date(myTimeline[x].created_at);
-                    var date3 = new Date(created_at);
+                var date_queryy = new Date(queryDate);
+                var created_att = new Date(myTimeline[y].created_at);
 
-                    var difference_in_time2 = date2.getTime() - date3.getTime();
+                var checkUser = supportTeamUID.includes(myTimeline[y].actor.id);
+                var checkEvents = issueEvents.includes(myTimeline[y].event);
 
-                    if ((myTimeline[x].actor.id != google_oos_bot_uid) && (myTimeline[x].event == "commented") && (supportTeamUID.includes(myTimeline[x].actor.id))) {
-                        initial_response_time_hrs = msToTimeToHours(difference_in_time2)
-                        break;
-                    }
+                if (checkUser && (created_att.getTime() >= date_queryy.getTime()) && checkEvents) {
 
-                    if ((myTimeline[x].actor.id != google_oos_bot_uid) && (myTimeline[x].event == "commented") && (githubUsers.includes(myTimeline[x].actor.id))) {
-                        engineer_initial_response_time = msToTimeToHours(difference_in_time2)
-                        break;
-                    }
-                }
+                    for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
 
-                for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+                        if (myTimeline[x].actor.id != google_oos_bot_uid) {
 
-                    if (myTimeline[x].actor.id != google_oos_bot_uid) {
-
-                        if ((myTimeline[x].event == "commented")) {
-                            ++total_number_of_responses;
-                            if ((supportTeamUID.includes(myTimeline[x].actor.id))) {
-                                ++number_of_support_responses;
+                            if ((myTimeline[x].event == "commented")) {
+                                if ((supportTeamUID.includes(myTimeline[x].actor.id))) {
+                                    ++number_of_support_responses;
+                                }
                             }
 
-                            if ((githubUsers.includes(myTimeline[x].actor.id))) {
-                                ++number_of_engineers_responses;
-                            }
-
-                            if ((!githubUsers.includes(myTimeline[x].actor.id)) && (!supportTeamUID.includes(myTimeline[x].actor.id))) {
-                                ++number_of_external_developer_responses;
+                            if (myTimeline[x].event == "labeled" || myTimeline[x].event == "unlabeled") {
+                                if (supportTeamUID.includes(myTimeline[x].actor.id)) {
+                                    ++number_of_support_labels;
+                                }
                             }
                         }
 
-                        if (myTimeline[x].event == "labeled") {
-                            ++number_of_triage_activity;
-                            var labelName = myTimeline[x].label.name;
-
-
-                            if (labelName.indexOf("api") >= 0) {
-                                ++number_of_api_labeling;
-                            }
-
-                            if (labelName.indexOf("type") >= 0) {
-                                ++number_of_type_labeling;
-                            }
-
-                            if (labelName.indexOf("needs-info") >= 0 || labelName.indexOf("needs info") >= 0) {
-                                ++number_of_need_info_Labeling;
-                            }
+                        // closed_by
+                        if (myTimeline[x].event == "closed") {
+                            group = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
+                            closed_by = myTimeline[x].actor.login;
                         }
                     }
+                    logReport(queue_pr + ','
+                        + issue_number_pr + ','
+                        + date_logged + ','
+                        + issue_status + ','
+                        + number_of_support_labels + ','
+                        + number_of_support_responses + ','
+                        + closed_by + ','
+                        + group);
+                    logReport("\n");
+                    break;
 
-                    // closed_by
-                    if (myTimeline[x].event == "closed") {
-                        closed_by = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
-                    }
                 }
 
-                logReport(queue_pr + ','
-                    + issue_number_pr + ','
-                    + date_logged + ','
-                    + engineer_initial_response_time + ','
-                    + initial_response_time_hrs + ','
-                    + total_number_of_responses + ','
-                    + number_of_support_responses + ','
-                    + number_of_engineers_responses + ','
-                    + number_of_external_developer_responses + ','
-                    + number_of_triage_activity + ','
-                    + number_of_api_labeling + ','
-                    + number_of_type_labeling + ','
-                    + number_of_need_info_Labeling + ','
-                    + closed_date + ','
-                    + close_time_hrs + ','
-                    + close_time_days + ','
-                    + closed_by + ','
-                    + repro + ','
-                    + response + ','
-                    + close + ','
-                    + month_Logged + ',');
-
-                break;
             }
-            logReport("\n");
+
         }
+
     }
 
 

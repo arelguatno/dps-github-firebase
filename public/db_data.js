@@ -35,7 +35,7 @@ function getIssueReproMessage(repo_name, issue_number) {
     })
 }
 
-function getIssueTriageCompletionDate(repo_name, issue_number){
+function getIssueTriageCompletionDate(repo_name, issue_number) {
     var notesRef = db.collection("notes").doc(repo_name).collection(issue_number).doc("data").collection("notes");
     var query = notesRef.where("action", "==", "STATUS_CHANGED").orderBy("created_at", "desc")  // latest first
 
@@ -58,21 +58,6 @@ function getIssueTriageCompletionDate(repo_name, issue_number){
     })
 }
 
-function getRepoName(repo_name) {
-    if (repo_name == "firebase/firebase-android-sdk") {
-        return "android"
-    } else if (repo_name == "firebase/firebase-js-sdk") {
-        return "js"
-    } else if (repo_name == "firebase/firebase-ios-sdk") {
-        return "ios"
-    } else if (repo_name == "firebase/quickstart-unity") {
-        return "quickstart-unity"
-    } else if (repo_name == "googlesamples/unity-jar-resolver") {
-        return "unity-jar-resolver"
-    } else {
-        return "unkown"
-    }
-}
 
 
 

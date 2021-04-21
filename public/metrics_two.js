@@ -3,14 +3,11 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
 
-const issueEvents = ["labeled", "unlabeled", "commented", "closed", "opened"];
-const labelEvent = ["labeled", "unlabeled"];
-const issueState = ["closed", "reopened"];
-
 var oauth_token = ''
 var repo_name = '';
 var queryDate = '';
 var countissue = 0;
+var participants_array = [];
 
 //What to sort results by. Can be either created, updated, comments. Default: created
 var rest_api_sort_param = "created";
@@ -145,6 +142,7 @@ const getListOfIssues = async function (pageNo = 1) {
 const getEntireIssueList = async function (pageNo = 1) {
     const results = await getListOfIssues(pageNo);
     console.log("Retreiving data from API for page : " + pageNo);
+    document.getElementById('report_start').innerHTML = "Retreiving data from API for page : " + pageNo;
     if (results.length > 0) {
         return results.concat(await getEntireIssueList(pageNo + 1));
     } else {
@@ -152,40 +150,13 @@ const getEntireIssueList = async function (pageNo = 1) {
     }
 };
 
-// // Get all issues
-// // Documentation: https://developer.github.com/v3/issues/
-// // Note GitHub's REST API v3 considers every pull request an issue.
-// const getListOfIssues = async function (pageNo = 1) {
-//     var url = 'https://api.github.com/orgs/firebase/members?page=' + `${pageNo}` + '';
-//     console.log(url);
-//     const apiResults = await fetch(url, {
-//         method: 'GET',
-//         headers: {
-//             'Authorization': oauth_token
-//         }
-//     }).then(resp => {
-//         return resp.json();
-//     });
-//     return apiResults;
-// }
-
-// const getEntireIssueList = async function (pageNo = 1) {
-//     const results = await getListOfIssues(pageNo);
-//     console.log("Retreiving data from API for page : " + pageNo);
-//     if (results.length > 0) {
-//         return results.concat(await getEntireIssueList(pageNo + 1));
-//     } else {
-//         return results;
-//     }
-// };
-
-
 // Get issue timeline
 // Documentation: https://developer.github.com/v3/issues/timeline/
 const getIssueTimeline = async function (issue_number, pageNo = 1) {
     // issue_number = '1006';
     var url = 'https://api.github.com/repos/' + repo_name + '/issues/' + issue_number + '/timeline?page=' + `${pageNo}` + '';
     console.log(url);
+    document.getElementById('report_start').innerHTML = "Getting timelines of issue#" +issue_number;
     const apiResults = await fetch(url, {
         method: 'GET',
         headers: {
@@ -213,7 +184,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Issue Number,POC Assignee,Date Logged,Reporter, Reporter FB?,Triage Start Date,Triage Start Rate,Triaged by,Triage FB?,FR Date, FR Rate, FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion,Triage Completion Rate,Last label changed by,Completed FB?,Date Closed,Closed by,Type,API");
+    logReport("Queue,Issue Number,POC Assignee, Assigned Date, Date Logged,Reporter, Reporter FB?,Triage Start Date (First labeled Date),Triage Start Rate,Triaged by,Triage FB?,First FR Date, First FR Rate, First FR by, FR FB?,First Need Info Date,First Need Info by, NI FB?,Triage Completion,Triage Completion Rate,Last label changed by,Completed FB?,Date Closed,Closed by,Type,API,Dev Response Dates,Participants");
     logReport("\n");
 
 
@@ -221,6 +192,8 @@ const letsGo = async () => {
         var date_created = new Date(myJson[i].created_at);
         var date_queryy = new Date(queryDate);
         if (myJson[i].pull_request == undefined && (date_created.getTime() >= date_queryy.getTime())) { // only those Github issues
+            var queue_pr = '';
+            var issue_number_pr = '';
             var issue_number = ''
             var poc_assignee = '';
             var date_logged = '';
@@ -245,9 +218,15 @@ const letsGo = async () => {
             var completed_fb = '';
             var triage_completion_rate = '';
             var closed_by = '';
-
+            var dev_response_dates = '';
+            var participants = '';
+            var reporter_id = '';
+            var assigned_date = '';
 
             issue_number = myJson[i].number
+            issue_number_pr = issueNumberWithHyperLink(myJson[i].html_url, issue_number);
+            queue_pr = getRepoName(repo_name);
+
             if (myJson[i].assignee != null) {
                 poc_assignee = myJson[i].assignee.login
             } else {
@@ -263,6 +242,7 @@ const letsGo = async () => {
 
             reporter = myJson[i].user.login
             reporter_fb = checkUserMembership(myJson[i].user.id, myJson[i].user.login);
+            reporter_id = myJson[i].user.id;
 
             for (var xx = 0, lengths = myJson[i].labels.length; xx < lengths; xx++) {
                 api = api + myJson[i].labels[xx].name + ";";
@@ -310,7 +290,7 @@ const letsGo = async () => {
 
                     var difference_in_time2 = date2.getTime() - date3.getTime();
 
-                    if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled") {
+                    if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled" && myTimeline[x].actor.id != reporter_id) {
                         triage_start_date = formatDate(myTimeline[x].created_at);
                         triage_start_rate = msToTimeToHours(difference_in_time2)
                         triaged_by = myTimeline[x].actor.login;
@@ -331,7 +311,27 @@ const letsGo = async () => {
                     if (myTimeline[x].event == "closed") {
                         closed_by = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
                     }
+
+                    // dev response dates
+                    if ((myTimeline[x].event == "commented") && (myTimeline[x].actor.id == reporter_id)) {
+                        dev_response_dates = dev_response_dates + formatDate(myTimeline[x].created_at) + ";";;
+                    }
+
+                    //participants
+                    if (myTimeline[x].actor.id != google_oos_bot_uid) {
+                        participants_array.push(myTimeline[x].actor.login);
+                    }
+
+                    if (myTimeline[x].event == "assigned"){
+                        poc_assignee = myTimeline[x].actor.login;
+                        assigned_date = formatDate(myTimeline[x].created_at);
+                    }
+
                 }
+
+                participants_array.push(reporter);
+                let dup = [...new Set(participants_array)];
+                participants = dup.join(';');
 
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
                     var date2 = new Date(myTimeline[x].created_at);
@@ -345,7 +345,8 @@ const letsGo = async () => {
                         break;
                     }
 
-                    if (myTimeline[x].event == "unlabeled" && myTimeline[x].label.name == "needs-triage") {
+                    // Unity SDK is using new Label
+                    if (myTimeline[x].event == "unlabeled" && (myTimeline[x].label.name == "needs-triage" || myTimeline[x].label.name == "new")) {
                         triage_completion = formatDate(myTimeline[x].created_at);
                         triage_completion_rate = msToTimeToHours(difference_in_time2);
                         break;
@@ -381,8 +382,10 @@ const letsGo = async () => {
                     }
                 }
 
-                logReport(issue_number + ','
+                logReport(queue_pr + ','
+                    + issue_number_pr + ','
                     + poc_assignee + ','
+                    + assigned_date + ','
                     + date_logged + ','
                     + reporter + ','
                     + reporter_fb + ','
@@ -404,9 +407,14 @@ const letsGo = async () => {
                     + date_closed + ','
                     + closed_by + ','
                     + type + ','
-                    + api + ',');
+                    + api + ','
+                    + dev_response_dates + ','
+                    + participants);
+
+
                 break;
             }
+            participants_array = [];
             logReport("\n");
         }
     }
@@ -429,23 +437,6 @@ firebase.auth().onAuthStateChanged(function (user) {
         authLogin();
     }
 });
-
-function formatDate(s_date) {
-    var date = new Date(s_date);
-
-    return date.getFullYear() + "-" + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + " " + formatAMPM(date)
-}
-
-function formatAMPM(date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
-    return strTime;
-}
 
 function saveUserToken(token, user) {
     userDoc = {
@@ -471,20 +462,5 @@ function downloadFile(urlData) {
         document.body.appendChild(a);
         a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
         document.body.removeChild(a);
-    }
-}
-
-function checkUserMembership(user_id, user_name) {
-    var checkFirebaseMembers = githubUsers.includes(user_id);
-    var checkFirebaseSupports = supportTeamUID.includes(user_id);
-    
-    if (checkFirebaseMembers) {
-        return "Internal (Firebase Members)";
-    } else if (checkFirebaseSupports) {
-        return "Support Team (arel/riza/rommel)"
-    } else if (user_id == google_oos_bot_uid) {
-        return "Google Bot"
-    } else {
-        return "External (developers)";
     }
 }

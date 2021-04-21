@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Github Project</title>
 
+  <script src="firebase_config.js"></script>
+
   <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-auth.js"></script>
@@ -14,7 +16,6 @@
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  
   <script>
     $(function () {
       $("#datepicker").datepicker({ dateFormat: 'yy-mm-dd' }).datepicker("setDate", new Date());;
@@ -25,11 +26,11 @@
 <body>
 
   <p><a href="/index.html">&larr;</a></p>
-  <h2>(3) Total numbers of Responses/Triage/Labels etc.</h2>
+  <h2>(6) Issues Handled</h2>
   <p4 id="user_name"> </p4><button type="button" id="logout">Logout</button>
 
   <br><br>
-  <p>Issue created since: <input type="text" id="datepicker"></p>
+  <p>All Handled Issues Since: <input type="text" id="datepicker"></p>
 
   <select id="repo">
     <option value="firebase/firebase-android-sdk">firebase-android-sdk</option>
@@ -37,12 +38,8 @@
     <option value="firebase/firebase-ios-sdk">firebase-ios-sdk</option>
     <option value="firebase/quickstart-unity">quickstart-unity</option>
     <option value="googlesamples/unity-jar-resolver">unity-jar-resolver</option>
+    <option value="sdk/all">All</option>
   </select>
-
-  <!-- <select id="sort">
-    <option value="created">Created</option>
-    <option value="updated">Updated</option>
-  </select> -->
 
   <select id="state">
     <option value="all">All</option>
@@ -51,17 +48,15 @@
   </select>
 
   <button type="button" id="startReport">Run</button>
-
   <br><br><br> <p4 id="report_start" style="display:none">Preparing report, please wait..</p4>
-
 
   <p id="log_report"></p>
 
   <script src="firebase_config.js"></script>
   <script src="const_var.js"></script>
   <script src="db_data.js"></script>
-  <script src="metrics_three.js"></script>
-  
+  <script src="metrics_six.js"></script>
+
 </body>
 
 </html>

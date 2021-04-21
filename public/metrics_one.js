@@ -3,10 +3,6 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
 
-const issueEvents = ["labeled", "unlabeled", "commented", "closed", "opened"];
-const labelEvent = ["labeled", "unlabeled"];
-const issueState = ["closed", "reopened"];
-
 var oauth_token = ''
 var repo_name = '';
 var queryDate = '';
@@ -121,7 +117,7 @@ function msToTime(millisec) {
 // Note GitHub's REST API v3 considers every pull request an issue.
 const getListOfIssues = async function (pageNo = 1) {
     var url = 'https://api.github.com/repos/' + repo_name + '/issues?since=' + queryDate + '&sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
-    // console.log(url);
+    console.log(url);
     const apiResults = await fetch(url, {
         method: 'GET',
         headers: {
@@ -340,23 +336,6 @@ firebase.auth().onAuthStateChanged(function (user) {
         authLogin();
     }
 });
-
-function formatDate(s_date) {
-    var date = new Date(s_date);
-
-    return date.getFullYear() + "-" + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + " " + formatAMPM(date)
-}
-
-function formatAMPM(date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
-    return strTime;
-}
 
 function saveUserToken(token, user) {
     userDoc = {

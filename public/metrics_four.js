@@ -3,14 +3,6 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 var db = firebase.firestore();
 
-const issueEvents = ["labeled", "unlabeled", "commented", "closed", "opened"];
-const labelEvent = ["labeled", "unlabeled"];
-const issueState = ["closed", "reopened"];
-const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-];
-
-
 var oauth_token = ''
 var repo_name = '';
 var queryDate = '';
@@ -241,7 +233,10 @@ const letsGo = async () => {
             var last_updated_date = '';
             var last_updated_group = '';
             var reporter = '';
+            var reporter_id = '';
             reporter = myJson[i].user.login
+            var queue_pr = '';
+            var issue_number_pr = '';
 
 
             if (repo_name.indexOf("android") >= 0) {
@@ -253,8 +248,12 @@ const letsGo = async () => {
             }
 
             issue_number = myJson[i].number
+            issue_number_pr = issueNumberWithHyperLink(myJson[i].html_url, issue_number);
+            queue_pr = getRepoName(repo_name);
+
             date_created = formatDate(myJson[i].created_at)
             report_group = checkUserMembership(myJson[i].user.id)
+            reporter_id = myJson[i].user.id;
 
             for (var xx = 0, lengths = myJson[i].labels.length; xx < lengths; xx++) {
                 api = api + myJson[i].labels[xx].name + ";";
@@ -287,7 +286,7 @@ const letsGo = async () => {
 
                     var difference_in_time2 = date2.getTime() - date3.getTime();
 
-                    if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled") {
+                    if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled" && myTimeline[x].actor.id != reporter_id) {
                         first_label_date = formatDate(myTimeline[x].created_at);
                         first_label_group = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
                         first_label_duration = msToTimeToHours(difference_in_time2)
@@ -357,8 +356,8 @@ const letsGo = async () => {
 
                 }
 
-                logReport(queue + ','
-                    + issue_number + ','
+                logReport(queue_pr + ','
+                    + issue_number_pr + ','
                     + date_created + ','
                     + report_group + ','
                     + first_label_date + ','
@@ -407,23 +406,6 @@ firebase.auth().onAuthStateChanged(function (user) {
     }
 });
 
-function formatDate(s_date) {
-    var date = new Date(s_date);
-
-    return ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + "/" + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + "/" + date.getFullYear()
-}
-
-function formatAMPM(date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
-    return strTime;
-}
-
 function saveUserToken(token, user) {
     userDoc = {
         'email': user.email,
@@ -451,18 +433,4 @@ function downloadFile(urlData) {
     }
 }
 
-function checkUserMembership(user_id, user_name) {
-    var checkFirebaseMembers = githubUsers.includes(user_id);
-    var checkFirebaseSupports = supportTeamUID.includes(user_id);
-
-    if (checkFirebaseMembers) {
-        return "Internal (Firebase Members)";
-    } else if (checkFirebaseSupports) {
-        return "Support Team (arel/riza/rommel)"
-    } else if (user_id == google_oos_bot_uid) {
-        return "Google Bot"
-    } else {
-        return "External (developers)";
-    }
-}
 
