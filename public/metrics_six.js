@@ -9,9 +9,10 @@ var queryDate = '';
 var countissue = 0;
 
 //What to sort results by. Can be either created, updated, comments. Default: created
-var rest_api_sort_param = "created";
 // Indicates the state of the issues to return. Can be either open, closed, or all. Default: open
 var rest_api_state_param = "all";
+
+var rest_api_sort_param = "created";
 
 document.getElementById("startReport").addEventListener("click", myFunction);
 document.getElementById('logout').style.visibility = 'hidden';
@@ -27,11 +28,29 @@ function logOut() {
 
 }
 
+var html_link = "";
+db.collection("sample_links").where("link_number", "==", 6)
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            html_link = doc.data().link;
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+
+function ChangeHref() {
+    document.getElementById("a").setAttribute("onclick", "location.href='" + html_link + "'");
+}
+
 function myFunction() {
-    repo_name = document.getElementById("repo").value
+    repo_name = document.getElementById("repo").value;
     rest_api_state_param = document.getElementById("state").value;
     queryDate = document.getElementById("datepicker").value + " 00:00:00";
     document.getElementById("startReport").disabled = true;
+
 
     var user = firebase.auth().currentUser;
     if (user) {
@@ -87,60 +106,11 @@ function authLogin() {
     });
 }
 
-function msToTime(millisec) {
-    var seconds = (millisec / 1000).toFixed(1);
-    var minutes = (millisec / (1000 * 60)).toFixed(1);
-    var hours = (millisec / (1000 * 60 * 60)).toFixed(1);
-    var days = (millisec / (1000 * 60 * 60 * 24)).toFixed(1);
-
-    if (seconds < 60) {
-        return seconds + " sec";
-    } else if (minutes < 60) {
-        return minutes + " min";
-    } else if (hours < 24) {
-        return hours + " hrs";
-    } else {
-        return days + " days"
-    }
-}
-
-function msToTimeDays(millisec) {
-    var seconds = (millisec / 1000).toFixed(1);
-    var minutes = (millisec / (1000 * 60)).toFixed(1);
-    var hours = (millisec / (1000 * 60 * 60)).toFixed(1);
-    var days = (millisec / (1000 * 60 * 60 * 24)).toFixed(1);
-
-    if (seconds < 60) {
-        return "";
-    } else if (minutes < 60) {
-        return "";
-    } else if (hours < 24) {
-        return "";
-    } else {
-        return days + " days"
-    }
-}
-
-
-function msToTimeToHours(millisec) {
-    var seconds = (millisec / 1000).toFixed(1);
-    var minutes = (millisec / (1000 * 60)).toFixed(1);
-    var hours = (millisec / (1000 * 60 * 60)).toFixed(1);
-
-    if (seconds < 60) {
-        return seconds + " sec";
-    } else if (minutes < 60) {
-        return minutes + " min";
-    } else {
-        return hours + " hrs";
-    }
-}
-
 // Get all issues
 // Documentation: https://developer.github.com/v3/issues/
 // Note GitHub's REST API v3 considers every pull request an issue.
 const getListOfIssues = async function (pageNo = 1) {
-    var url = 'https://api.github.com/repos/' + repo_name + '/issues?since=' + queryDate + '&sort=created&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
+    var url = 'https://api.github.com/repos/' + repo_name + '/issues?sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
     console.log(url);
     const apiResults = await fetch(url, {
         method: 'GET',
@@ -194,111 +164,247 @@ const getEntireTimeline = async function (issue_number, pageNo) {
     }
 };
 
+var queue_pr = '';
+var date_pr = '';
+var abtesting_pr = 0;
+var ads_pr = 0;
+var analytics_pr = 0;
+var appdistribution_pr = 0;
+var appindexing_pr = 0;
+var auth_pr = 0;
+var bom_pr = 0;
+var core_pr = 0;
+var crashlytics_pr = 0;
+var database_pr = 0;
+var dynamiclinks_pr = 0;
+var firestore_pr = 0;
+var functions_pr = 0;
+var hosting_pr = 0;
+var inappmessaging_pr = 0;
+var installations_pr = 0;
+var instanceid_pr = 0;
+var invites_pr = 0;
+var messaging_pr = 0;
+var mlkit_pr = 0;
+var performance_pr = 0;
+var predictions_pr = 0;
+var remoteconfig_pr = 0;
+var segmentation_pr = 0;
+var storage_pr = 0;
+var tagmanager_pr = 0;
+var testlab_pr = 0;
+
 const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Queue,Issue #,Date Logged,Status,Number of Suppport Labeled/Unlabeled,Number of Support Responses, Closed By, Group");
+    logReport("Queue, Product, Count");
     logReport("\n");
-
 
     for (var i = 0, length = keys.length; i < length; i++) {
         var date_created = new Date(myJson[i].created_at);
         var date_queryy = new Date(queryDate);
 
-        if (myJson[i].pull_request == undefined) { // only those Github issues
-
-            var issue_number, issue_number_pr = '';
-            var date_logged = '';
-            var number_of_support_responses = 0;
-            var number_of_support_labels = 0;
-            var closed_by = '';
-            var issue_status = '';
-            var queue_pr = '';
-            var group = '';
-
-            issue_number = myJson[i].number;
-            issue_number_pr = issueNumberWithHyperLink(myJson[i].html_url, issue_number);
+        if (myJson[i].pull_request == undefined && (date_created.getTime() >= date_queryy.getTime())) { // only those Github issues
             queue_pr = getRepoName(repo_name);
+            date_pr = formatDate(myJson[i].created_at)
 
-            date_logged = formatDate(myJson[i].created_at)
-            month_Logged = formatDateMonth(myJson[i].created_at);
-            reporter = myJson[i].user.login
-
-            repro = await getIssueReproMessage(getRepoName(repo_name), issue_number.toString());
-
-            if (myJson[i].state == "open") {
-                closed_date = ''
-                close_time_hrs = '';
-                close = 'open'
-                issue_status = 'Open'
-
-                for (var x = 0, length2 = myJson[i].labels.length; x < length2; x++) {
-                    if (myJson[i].labels[x].name == 'needs-info') {
-                        issue_status = "Needs Info"
-                    }
-                    if (myJson[i].labels[x].name == 'needs-attention') {
-                        issue_status = "Needs Attention"
-                    }
+            for (var x = 0, length2 = myJson[i].labels.length; x < length2; x++) {
+                if (myJson[i].labels[x].name.indexOf("abtesting") >= 0) {
+                    ++abtesting_pr;
+                } else if (myJson[i].labels[x].name.indexOf("ads") >= 0) {
+                    ++ads_pr;
+                } else if (myJson[i].labels[x].name.indexOf("analytics") >= 0) {
+                    ++analytics_pr;
+                } else if (myJson[i].labels[x].name.indexOf("appdistribution") >= 0) {
+                    ++appdistribution_pr;
+                } else if (myJson[i].labels[x].name.indexOf("appindexing") >= 0) {
+                    ++appindexing_pr;
+                } else if (myJson[i].labels[x].name.indexOf("auth") >= 0) {
+                    ++auth_pr;
+                } else if (myJson[i].labels[x].name.indexOf("bom") >= 0) {
+                    ++bom_pr;
+                } else if (myJson[i].labels[x].name.indexOf("core") >= 0) {
+                    ++core_pr;
+                } else if (myJson[i].labels[x].name.indexOf("crashlytics") >= 0) {
+                    ++crashlytics_pr;
+                } else if (myJson[i].labels[x].name.indexOf("database") >= 0) {
+                    ++database_pr;
+                } else if (myJson[i].labels[x].name.indexOf("dynamiclinks") >= 0) {
+                    ++dynamiclinks_pr;
+                } else if (myJson[i].labels[x].name.indexOf("firestore") >= 0) {
+                    ++firestore_pr;
+                } else if (myJson[i].labels[x].name.indexOf("functions") >= 0) {
+                    ++functions_pr;
+                } else if (myJson[i].labels[x].name.indexOf("hosting") >= 0) {
+                    ++hosting_pr;
+                } else if (myJson[i].labels[x].name.indexOf("inappmessaging") >= 0) {
+                    ++inappmessaging_pr;
+                } else if (myJson[i].labels[x].name.indexOf("installations") >= 0) {
+                    ++installations_pr;
+                } else if (myJson[i].labels[x].name.indexOf("instanceid") >= 0) {
+                    ++instanceid_pr;
+                } else if (myJson[i].labels[x].name.indexOf("invites") >= 0) {
+                    ++instanceid_pr;
+                } else if (myJson[i].labels[x].name.indexOf("invites") >= 0) {
+                    ++invites_pr;
+                } else if (myJson[i].labels[x].name.indexOf("messaging") >= 0) {
+                    ++messaging_pr;
+                } else if (myJson[i].labels[x].name.indexOf("mlkit") >= 0) {
+                    ++mlkit_pr;
+                } else if (myJson[i].labels[x].name.indexOf("performance") >= 0) {
+                    ++performance_pr;
+                } else if (myJson[i].labels[x].name.indexOf("predictions") >= 0) {
+                    ++predictions_pr;
+                } else if (myJson[i].labels[x].name.indexOf("remoteconfig") >= 0) {
+                    ++remoteconfig_pr;
+                } else if (myJson[i].labels[x].name.indexOf("segmentation") >= 0) {
+                    ++segmentation_pr;
+                } else if (myJson[i].labels[x].name.indexOf("storage") >= 0) {
+                    ++storage_pr;
+                } else if (myJson[i].labels[x].name.indexOf("tagmanager") >= 0) {
+                    ++tagmanager_pr;
+                } else if (myJson[i].labels[x].name.indexOf("testlab") >= 0) {
+                    ++testlab_pr;
                 }
-            } else {
-                issue_status = 'Closed'
             }
-
-            const myTimeline = await getEntireTimeline(issue_number, pageNo = 1);
-            var myTimelineKeys = Object.keys(myTimeline);
-
-            for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
-
-                var date_queryy = new Date(queryDate);
-                var created_att = new Date(myTimeline[y].created_at);
-
-                var checkUser = supportTeamUID.includes(myTimeline[y].actor.id);
-                var checkEvents = issueEvents.includes(myTimeline[y].event);
-
-                if (checkUser && (created_att.getTime() >= date_queryy.getTime()) && checkEvents) {
-
-                    for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
-
-                        if (myTimeline[x].actor.id != google_oos_bot_uid) {
-
-                            if ((myTimeline[x].event == "commented")) {
-                                if ((supportTeamUID.includes(myTimeline[x].actor.id))) {
-                                    ++number_of_support_responses;
-                                }
-                            }
-
-                            if (myTimeline[x].event == "labeled" || myTimeline[x].event == "unlabeled") {
-                                if (supportTeamUID.includes(myTimeline[x].actor.id)) {
-                                    ++number_of_support_labels;
-                                }
-                            }
-                        }
-
-                        // closed_by
-                        if (myTimeline[x].event == "closed") {
-                            group = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
-                            closed_by = myTimeline[x].actor.login;
-                        }
-                    }
-                    logReport(queue_pr + ','
-                        + issue_number_pr + ','
-                        + date_logged + ','
-                        + issue_status + ','
-                        + number_of_support_labels + ','
-                        + number_of_support_responses + ','
-                        + closed_by + ','
-                        + group);
-                    logReport("\n");
-                    break;
-
-                }
-
-            }
-
         }
-
     }
+
+    logReport(queue_pr + ','
+        + "AB Testing" + ','
+        + abtesting_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Ads" + ','
+        + ads_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Analytics" + ','
+        + analytics_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "App Distribution" + ','
+        + appdistribution_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "App Indexing" + ','
+        + appindexing_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Auth" + ','
+        + auth_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Bom" + ','
+        + bom_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Core" + ','
+        + core_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Crashlytics" + ','
+        + crashlytics_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Database" + ','
+        + database_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Dynamic Links" + ','
+        + dynamiclinks_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Firestore" + ','
+        + firestore_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Functions" + ','
+        + functions_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Hosting" + ','
+        + hosting_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "In App Messaging" + ','
+        + inappmessaging_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Installations" + ','
+        + installations_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "InstanceID" + ','
+        + instanceid_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "InstanceID" + ','
+        + invites_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Messaging" + ','
+        + messaging_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "ML Kit" + ','
+        + mlkit_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Performance" + ','
+        + performance_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Predictions" + ','
+        + predictions_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Remote Config" + ','
+        + remoteconfig_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Segmentation" + ','
+        + segmentation_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Storage" + ','
+        + storage_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Tag Manager" + ','
+        + tagmanager_pr);
+    logReport("\n");
+
+    logReport(queue_pr + ','
+        + "Test Lab" + ','
+        + testlab_pr);
+    logReport("\n");
 
 
     var data = document.getElementById("log_report").textContent;
@@ -339,9 +445,11 @@ function downloadFile(urlData) {
     else {
         var a = window.document.createElement("a");
         a.href = window.URL.createObjectURL(blob, { type: "text/plain" });
-        a.download = "" + repo_name + " " + queryDate + ".csv";
+        a.download = "" + repo_name + " " + queryDate + "inflow_trend.csv";
         document.body.appendChild(a);
         a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
         document.body.removeChild(a);
     }
 }
+
+

@@ -7,8 +7,6 @@ var oauth_token = ''
 var repo_name = '';
 var queryDate = '';
 var countissue = 0;
-var participants_array = [];
-const issueEvents_new = ["labeled", "unlabeled", "commented", "closed", "opened", "transferred", "reopened"];
 
 //What to sort results by. Can be either created, updated, comments. Default: created
 var rest_api_sort_param = "created";
@@ -26,10 +24,11 @@ function logOut() {
     }).catch(function (error) {
         // An error happened.
     });
+
 }
 
 var html_link = "";
-db.collection("sample_links").where("link_number", "==", 2)
+db.collection("sample_links").where("link_number", "==", 5)
     .get()
     .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -122,6 +121,23 @@ function msToTime(millisec) {
     }
 }
 
+function msToTimeDays(millisec) {
+    var seconds = (millisec / 1000).toFixed(1);
+    var minutes = (millisec / (1000 * 60)).toFixed(1);
+    var hours = (millisec / (1000 * 60 * 60)).toFixed(1);
+    var days = (millisec / (1000 * 60 * 60 * 24)).toFixed(1);
+
+    if (seconds < 60) {
+        return "";
+    } else if (minutes < 60) {
+        return "";
+    } else if (hours < 24) {
+        return "";
+    } else {
+        return days + " days"
+    }
+}
+
 
 function msToTimeToHours(millisec) {
     var seconds = (millisec / 1000).toFixed(1);
@@ -141,8 +157,7 @@ function msToTimeToHours(millisec) {
 // Documentation: https://developer.github.com/v3/issues/
 // Note GitHub's REST API v3 considers every pull request an issue.
 const getListOfIssues = async function (pageNo = 1) {
-    var url = 'https://api.github.com/repos/' + repo_name + '/issues?sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
-    // var url = 'https://api.github.com/repos/firebase/' + repo_name + '/issues?since=' + queryDate + '&sort=' + rest_api_sort_param + '&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
+    var url = 'https://api.github.com/repos/' + repo_name + '/issues?since=' + queryDate + '&sort=created&state=' + rest_api_state_param + '&page=' + `${pageNo}` + '';
     console.log(url);
     const apiResults = await fetch(url, {
         method: 'GET',
@@ -159,7 +174,6 @@ const getListOfIssues = async function (pageNo = 1) {
 const getEntireIssueList = async function (pageNo = 1) {
     const results = await getListOfIssues(pageNo);
     console.log("Retreiving data from API for page : " + pageNo);
-    document.getElementById('report_start').innerHTML = "Retreiving data from API for page : " + pageNo;
     if (results.length > 0) {
         return results.concat(await getEntireIssueList(pageNo + 1));
     } else {
@@ -167,13 +181,13 @@ const getEntireIssueList = async function (pageNo = 1) {
     }
 };
 
+
 // Get issue timeline
 // Documentation: https://developer.github.com/v3/issues/timeline/
 const getIssueTimeline = async function (issue_number, pageNo = 1) {
-    // issue_number = '5866';
+    // issue_number = '1006';
     var url = 'https://api.github.com/repos/' + repo_name + '/issues/' + issue_number + '/timeline?page=' + `${pageNo}` + '';
     console.log(url);
-    document.getElementById('report_start').innerHTML = "Getting timelines of issue#" + issue_number;
     const apiResults = await fetch(url, {
         method: 'GET',
         headers: {
@@ -201,89 +215,112 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Queue,Issue Number, Logged date, Activity Type, Details, Date, Username, Group, Reporter Name, Reporter Type");
+    logReport("Queue,Issue #,Date Logged,Status,Number of Suppport Labeled/Unlabeled,Number of Support Responses, Closed By, Group");
     logReport("\n");
-
-    
 
 
     for (var i = 0, length = keys.length; i < length; i++) {
         var date_created = new Date(myJson[i].created_at);
         var date_queryy = new Date(queryDate);
 
-        if (myJson[i].pull_request == undefined && (date_created.getTime() >= date_queryy.getTime())) { // only those Github issues
-            var queue_pr = '';
+        if (myJson[i].pull_request == undefined) { // only those Github issues
+
             var issue_number, issue_number_pr = '';
-            var lbl_logged_date = '';
-            var activity_type = '';
-            var lbl_details= '';
-            var lbl_date= '';
-            var lbl_username= '';
-            var lbl_group= '';
-            var lbl_reporter = '';
-            var lbl_reporter_type = '';
-            
+            var date_logged = '';
+            var number_of_support_responses = 0;
+            var number_of_support_labels = 0;
+            var closed_by = '';
+            var issue_status = '';
+            var queue_pr = '';
+            var group = '';
 
-            issue_number = myJson[i].number
+            issue_number = myJson[i].number;
             issue_number_pr = issueNumberWithHyperLink(myJson[i].html_url, issue_number);
-
             queue_pr = getRepoName(repo_name);
 
-            const created_at = myJson[i].created_at
-            const state = myJson[i].state
-            const html_url = myJson[i].html_url
-            lbl_logged_date = formatDate(myJson[i].created_at)
+            date_logged = formatDate(myJson[i].created_at)
+            month_Logged = formatDateMonth(myJson[i].created_at);
+            reporter = myJson[i].user.login
+
+            repro = await getIssueReproMessage(getRepoName(repo_name), issue_number.toString());
+
+            if (myJson[i].state == "open") {
+                closed_date = ''
+                close_time_hrs = '';
+                close = 'open'
+                issue_status = 'Open'
+
+                for (var x = 0, length2 = myJson[i].labels.length; x < length2; x++) {
+                    if (myJson[i].labels[x].name == 'needs-info') {
+                        issue_status = "Needs Info"
+                    }
+                    if (myJson[i].labels[x].name == 'needs-attention') {
+                        issue_status = "Needs Attention"
+                    }
+                }
+            } else {
+                issue_status = 'Closed'
+            }
 
             const myTimeline = await getEntireTimeline(issue_number, pageNo = 1);
             var myTimelineKeys = Object.keys(myTimeline);
-            lbl_reporter = myJson[i].user.login
-            lbl_reporter_type = checkUserMembership(myJson[i].user.id, myJson[i].user.login);
 
-    
             for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
 
-                // Catch if no user is null
+                var date_queryy = new Date(queryDate);
+                var created_att = new Date(myTimeline[y].created_at);
+
                 if (myTimeline[y].actor == null){
                     continue;
                 }
 
-                var checkEvents = issueEvents_new.includes(myTimeline[y].event);
+                var checkUser = supportTeamUID.includes(myTimeline[y].actor.id);
+                var checkEvents = issueEvents.includes(myTimeline[y].event);
 
-                if (checkEvents) {
+                if (checkUser && (created_att.getTime() >= date_queryy.getTime()) && checkEvents) {
 
-                    activity_type = myTimeline[y].event;
+                    for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+                        if (myTimeline[x].actor == null){
+                            continue;
+                        }
+                        if (myTimeline[x].actor.id != google_oos_bot_uid) {
 
-                    if (myTimeline[y].event == "labeled"){
-                        lbl_details= myTimeline[y].actor.login + " added " + myTimeline[y].label.name ;
-                    }else if(myTimeline[y].event == "unlabeled"){
-                        lbl_details= myTimeline[y].actor.login + " removed " + myTimeline[y].label.name ;
-                    }else if(myTimeline[y].event == "closed"){
-                        lbl_details= myTimeline[y].actor.login + " closed the issue";
-                    }else if(myTimeline[y].event == "reopened"){
-                        lbl_details= myTimeline[y].actor.login + " reopened the issue";
-                    }else{
-                        lbl_details= myTimeline[y].actor.login + " " + myTimeline[y].event;
+                            if ((myTimeline[x].event == "commented")) {
+                                if ((supportTeamUID.includes(myTimeline[x].actor.id))) {
+                                    ++number_of_support_responses;
+                                }
+                            }
+
+                            if (myTimeline[x].event == "labeled" || myTimeline[x].event == "unlabeled") {
+                                if (supportTeamUID.includes(myTimeline[x].actor.id)) {
+                                    ++number_of_support_labels;
+                                }
+                            }
+                        }
+
+                        // closed_by
+                        if (myTimeline[x].event == "closed") {
+                            group = checkUserMembership(myTimeline[x].actor.id, myTimeline[x].actor.login);
+                            closed_by = myTimeline[x].actor.login;
+                        }
                     }
-                    lbl_date = formatDate(myTimeline[y].created_at);
-                    lbl_username= myTimeline[y].actor.login;
-                    lbl_group= checkUserMembership(myTimeline[y].actor.id, myTimeline[y].actor.login);
-                   
-                   logReport(queue_pr + ','
-                       + issue_number_pr + ','
-                       + lbl_logged_date + ','
-                       + activity_type + ','
-                       + lbl_details + ','
-                       + lbl_date + ','
-                       + lbl_username + ','
-                       + lbl_group+ ','
-                       + lbl_reporter+ ','
-                       + lbl_reporter_type);
-                       
+                    logReport(queue_pr + ','
+                        + issue_number_pr + ','
+                        + date_logged + ','
+                        + issue_status + ','
+                        + number_of_support_labels + ','
+                        + number_of_support_responses + ','
+                        + closed_by + ','
+                        + group);
                     logReport("\n");
-                } 
+                    break;
+
+                }
+
             }
-            logReport("\n");
+
         }
+
     }
 
 
@@ -321,11 +358,11 @@ function saveUserToken(token, user) {
 function downloadFile(urlData) {
     var blob = new Blob([urlData]);
     if (window.navigator.msSaveOrOpenBlob)  // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
-        window.navigator.msSaveBlob(blob, "" + repo_name + "" + queryDate + "timeline.csv");
+        window.navigator.msSaveBlob(blob, "" + repo_name + "" + queryDate + ".csv");
     else {
         var a = window.document.createElement("a");
         a.href = window.URL.createObjectURL(blob, { type: "text/plain" });
-        a.download = "" + repo_name + " " + queryDate + "timeline.csv";
+        a.download = "" + repo_name + " " + queryDate + "issues_handled.csv";
         document.body.appendChild(a);
         a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
         document.body.removeChild(a);

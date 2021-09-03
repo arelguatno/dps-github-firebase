@@ -26,12 +26,21 @@
 <body>
 
   <p><a href="/index.html">&larr;</a></p>
-  <h2>(6) Issues Handled</h2>
+  <h2>(6) Inflow Trend</h2>
   <p4 id="user_name"> </p4><button type="button" id="logout">Logout</button>
 
-  <br><br>
-  <p>All Handled Issues Since: <input type="text" id="datepicker"></p>
+  <p style="display:inline;">
+    <br><br>
+    <span>Products Inflow Trend</span>
+    <span><a a href="#" id="a" onclick="ChangeHref()">See Sample report</a></span>
+    <span>Source: Github API</span>
+  </p>
 
+  <br><br>
+  <p>Parameters:</p>
+  Issues created since: <input type="text" id="datepicker">
+
+  Repository
   <select id="repo">
     <option value="firebase/firebase-android-sdk">firebase-android-sdk</option>
     <option value="firebase/firebase-js-sdk">firebase-js-sdk</option>
@@ -41,6 +50,7 @@
     <option value="sdk/all">All</option>
   </select>
 
+  Issue Status
   <select id="state">
     <option value="all">All</option>
     <option value="open">Open</option>

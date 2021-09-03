@@ -8,7 +8,8 @@ var repo_name = '';
 var queryDate = '';
 var countissue = 0;
 var participants_array = [];
-const issueEvents_new = ["labeled", "unlabeled", "commented", "closed", "opened", "transferred", "reopened"];
+// const issueEvents_new = ["labeled", "unlabeled"];
+const issueEvents_new = ["labeled"];
 
 //What to sort results by. Can be either created, updated, comments. Default: created
 var rest_api_sort_param = "created";
@@ -201,7 +202,7 @@ const letsGo = async () => {
     const myJson = await getEntireIssueList();
     var keys = Object.keys(myJson);
     // console.log("Total Issues (Pull/Issue): " + keys.length);
-    logReport("Queue,Issue Number, Logged date, Activity Type, Details, Date, Username, Group, Reporter Name, Reporter Type");
+    logReport("Queue,Issue Number, Logged date, Activity type, Label Name, Labeled Date, Reporter Name, Reporter Type");
     logReport("\n");
 
     
@@ -215,29 +216,20 @@ const letsGo = async () => {
             var queue_pr = '';
             var issue_number, issue_number_pr = '';
             var lbl_logged_date = '';
-            var activity_type = '';
-            var lbl_details= '';
-            var lbl_date= '';
-            var lbl_username= '';
-            var lbl_group= '';
+            var lbl_name= '';
+            var lbl_date, activity_type = '';
             var lbl_reporter = '';
             var lbl_reporter_type = '';
+    
             
-
             issue_number = myJson[i].number
             issue_number_pr = issueNumberWithHyperLink(myJson[i].html_url, issue_number);
 
             queue_pr = getRepoName(repo_name);
-
-            const created_at = myJson[i].created_at
-            const state = myJson[i].state
-            const html_url = myJson[i].html_url
             lbl_logged_date = formatDate(myJson[i].created_at)
 
             const myTimeline = await getEntireTimeline(issue_number, pageNo = 1);
             var myTimelineKeys = Object.keys(myTimeline);
-            lbl_reporter = myJson[i].user.login
-            lbl_reporter_type = checkUserMembership(myJson[i].user.id, myJson[i].user.login);
 
     
             for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
@@ -252,33 +244,16 @@ const letsGo = async () => {
                 if (checkEvents) {
 
                     activity_type = myTimeline[y].event;
-
-                    if (myTimeline[y].event == "labeled"){
-                        lbl_details= myTimeline[y].actor.login + " added " + myTimeline[y].label.name ;
-                    }else if(myTimeline[y].event == "unlabeled"){
-                        lbl_details= myTimeline[y].actor.login + " removed " + myTimeline[y].label.name ;
-                    }else if(myTimeline[y].event == "closed"){
-                        lbl_details= myTimeline[y].actor.login + " closed the issue";
-                    }else if(myTimeline[y].event == "reopened"){
-                        lbl_details= myTimeline[y].actor.login + " reopened the issue";
-                    }else{
-                        lbl_details= myTimeline[y].actor.login + " " + myTimeline[y].event;
-                    }
+                    lbl_name = myTimeline[y].label.name;
                     lbl_date = formatDate(myTimeline[y].created_at);
-                    lbl_username= myTimeline[y].actor.login;
-                    lbl_group= checkUserMembership(myTimeline[y].actor.id, myTimeline[y].actor.login);
+                
                    
                    logReport(queue_pr + ','
                        + issue_number_pr + ','
                        + lbl_logged_date + ','
                        + activity_type + ','
-                       + lbl_details + ','
-                       + lbl_date + ','
-                       + lbl_username + ','
-                       + lbl_group+ ','
-                       + lbl_reporter+ ','
-                       + lbl_reporter_type);
-                       
+                       + lbl_name + ','
+                       + lbl_date);
                     logReport("\n");
                 } 
             }
@@ -321,11 +296,11 @@ function saveUserToken(token, user) {
 function downloadFile(urlData) {
     var blob = new Blob([urlData]);
     if (window.navigator.msSaveOrOpenBlob)  // IE hack; see http://msdn.microsoft.com/en-us/library/ie/hh779016.aspx
-        window.navigator.msSaveBlob(blob, "" + repo_name + "" + queryDate + "timeline.csv");
+        window.navigator.msSaveBlob(blob, "" + repo_name + "" + queryDate + "labels.csv");
     else {
         var a = window.document.createElement("a");
         a.href = window.URL.createObjectURL(blob, { type: "text/plain" });
-        a.download = "" + repo_name + " " + queryDate + "timeline.csv";
+        a.download = "" + repo_name + " " + queryDate + "labels.csv";
         document.body.appendChild(a);
         a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
         document.body.removeChild(a);

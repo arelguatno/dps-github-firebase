@@ -6,31 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Github Project</title>
 
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-analytics.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
 
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  
+
   <script>
     $(function () {
       $("#datepicker").datepicker({ dateFormat: 'yy-mm-dd' }).datepicker("setDate", new Date());;
     });
   </script>
+
 </head>
 
 <body>
 
   <p><a href="/index.html">&larr;</a></p>
-  <h2>(3) Total numbers of Responses/Triage/Labels etc.</h2>
-  <p4 id="user_name"> </p4><button type="button" id="logout">Logout</button>
+  <h2>(4) SLO</h2>
+  <p4 id="user_name"> </p4><button type="button" id="logout">Logout</button><br>
 
   <p style="display:inline;">
     <br><br>
-    <span>Get total numbers of Responses/Triage/Labels etc. </span>
+    <span>Service Level Objectives Report.</span>
     <span><a a href="#" id="a" onclick="ChangeHref()">See Sample report</a></span>
   </p>
 
@@ -47,11 +47,6 @@
     <option value="googlesamples/unity-jar-resolver">unity-jar-resolver</option>
   </select>
 
-  <!-- <select id="sort">
-    <option value="created">Created</option>
-    <option value="updated">Updated</option>
-  </select> -->
-  
   Issue Status
   <select id="state">
     <option value="all">All</option>
@@ -61,16 +56,42 @@
 
   <button type="button" id="startReport">Run</button>
 
-  <br><br><br> <p4 id="report_start" style="display:none">Preparing report, please wait..</p4>
+  <br><br><br>
+  <p4 id="report_start" style="display:none">Preparing report, please wait..</p4><br>
+
+  <button type="button" id="exportBtn" style="display:none">Export to CSV</button><br><br>
+
+  <table id="table" border="1">
+    <tr>
+      <th>Issue#</th>
+      <th>Date Created</th>
+      <th>State</th>
+      <th>--</th>
+      <th>SLO - 8Hrs Triage</th>
+      <th>Event</th>
+      <th>Date</th>
+      <th>--</th>
+      <th>SLO - First Repro Attempt</th>
+      <th>Event</th>
+      <th>Date</th>
+      <th>--</th>
+      <th>SLO - Second Repro Attempt</th>
+      <th>Event</th>
+      <th>Date</th>
+    </tr>
+
+  </table>
 
 
   <p id="log_report"></p>
 
+ 
+
   <script src="firebase_config.js"></script>
   <script src="const_var.js"></script>
   <script src="db_data.js"></script>
-  <script src="metrics_three.js"></script>
-  
+  <script src="metrics_four_slo.js"></script>
+  <!-- <script src="members.js"></script> -->
 </body>
 
 </html>

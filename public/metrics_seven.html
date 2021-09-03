@@ -26,21 +26,29 @@
 <body>
 
   <p><a href="/index.html">&larr;</a></p>
-  <h2>(7) Inflow Trend</h2>
+  <h2>(7) Timeline</h2>
   <p4 id="user_name"> </p4><button type="button" id="logout">Logout</button>
 
-  <br><br>
-  <p>All Handled Issues Since: <input type="text" id="datepicker"></p>
+  <p style="display:inline;">
+    <br><br>
+    <span>Issues activity timeline. </span><br>
+    <span>Source: Github API</span>
+  </p>
 
+  <br><br>
+  <p>Parameters:</p>
+  Issues created since: <input type="text" id="datepicker">
+
+  Repository
   <select id="repo">
     <option value="firebase/firebase-android-sdk">firebase-android-sdk</option>
     <option value="firebase/firebase-js-sdk">firebase-js-sdk</option>
     <option value="firebase/firebase-ios-sdk">firebase-ios-sdk</option>
     <option value="firebase/quickstart-unity">quickstart-unity</option>
     <option value="googlesamples/unity-jar-resolver">unity-jar-resolver</option>
-    <option value="sdk/all">All</option>
   </select>
 
+  Issue Status
   <select id="state">
     <option value="all">All</option>
     <option value="open">Open</option>

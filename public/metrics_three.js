@@ -28,6 +28,23 @@ function logOut() {
 
 }
 
+var html_link = "";
+db.collection("sample_links").where("link_number", "==", 3)
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            html_link = doc.data().link;
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+
+function ChangeHref() {
+    document.getElementById("a").setAttribute("onclick", "location.href='" + html_link + "'");
+}
+
 function myFunction() {
     repo_name = document.getElementById("repo").value
     rest_api_state_param = document.getElementById("state").value;
@@ -270,6 +287,11 @@ const letsGo = async () => {
 
                 // Initial Response 
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+
+                    if (myTimeline[x].actor == null){
+                        continue;
+                    }
+
                     var date2 = new Date(myTimeline[x].created_at);
                     var date3 = new Date(created_at);
 
@@ -287,6 +309,10 @@ const letsGo = async () => {
                 }
 
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+
+                    if (myTimeline[x].actor == null){
+                        continue;
+                    }
 
                     if (myTimeline[x].actor.id != google_oos_bot_uid) {
 
@@ -397,7 +423,7 @@ function downloadFile(urlData) {
     else {
         var a = window.document.createElement("a");
         a.href = window.URL.createObjectURL(blob, { type: "text/plain" });
-        a.download = "" + repo_name + " " + queryDate + ".csv";
+        a.download = "" + repo_name + " " + queryDate + "totalRTL.csv";
         document.body.appendChild(a);
         a.click();  // IE: "Access is denied"; see: https://connect.microsoft.com/IE/feedback/details/797361/ie-10-treats-blob-url-as-cross-origin-and-denies-access
         document.body.removeChild(a);

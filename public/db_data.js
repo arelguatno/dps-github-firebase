@@ -58,6 +58,22 @@ function getIssueTriageCompletionDate(repo_name, issue_number) {
     })
 }
 
+function getFirstReproDate(repro_name, issue_number){
+
+    var docRef = db.collection(repro_name).doc(issue_number);
+    return new Promise((resolve, reject) => {
+        docRef.get().then(function (doc) {
+            if (doc.exists) {
+                resolve(doc.data());
+            } else {
+                resolve(null);
+            }
+        }).catch(function (error) {
+            resolve(null);
+        });
+    })
+}
+
 
 
 
