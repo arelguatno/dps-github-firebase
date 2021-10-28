@@ -28,9 +28,19 @@
   <h2>(2) Github Metrics (First Reponse/FR/NI)</h2>
   <p4 id="user_name"> </p4><button type="button" id="logout">Logout</button>
 
-  <br><br>
-  <p>Issue created since: <input type="text" id="datepicker"></p>
+  <p style="display:inline;">
+    <br><br>
+    <span>Generate Github Metrics report such First Response, First NI etc.</span>
+    <span><a a href="#" id="a" onclick="ChangeHref()">See Sample report</a></span>
+  </p>
 
+
+
+  <br><br>
+  <p>Parameters:</p>
+  Issues created since: <input type="text" id="datepicker">
+
+  Repository
   <select id="repo">
     <option value="firebase/firebase-android-sdk">firebase-android-sdk</option>
     <option value="firebase/firebase-js-sdk">firebase-js-sdk</option>
@@ -43,7 +53,7 @@
     <option value="created">Created</option>
     <option value="updated">Updated</option>
   </select> -->
-
+  Issue Status
   <select id="state">
     <option value="all">All</option>
     <option value="open">Open</option>

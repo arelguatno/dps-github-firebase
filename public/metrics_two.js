@@ -25,7 +25,23 @@ function logOut() {
     }).catch(function (error) {
         // An error happened.
     });
+}
 
+var html_link = "";
+db.collection("sample_links").where("link_number", "==", 2)
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            html_link = doc.data().link;
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+
+function ChangeHref() {
+    document.getElementById("a").setAttribute("onclick", "location.href='" + html_link + "'");
 }
 
 function myFunction() {
@@ -153,10 +169,10 @@ const getEntireIssueList = async function (pageNo = 1) {
 // Get issue timeline
 // Documentation: https://developer.github.com/v3/issues/timeline/
 const getIssueTimeline = async function (issue_number, pageNo = 1) {
-    // issue_number = '1006';
+    // issue_number = '5866';
     var url = 'https://api.github.com/repos/' + repo_name + '/issues/' + issue_number + '/timeline?page=' + `${pageNo}` + '';
     console.log(url);
-    document.getElementById('report_start').innerHTML = "Getting timelines of issue#" +issue_number;
+    document.getElementById('report_start').innerHTML = "Getting timelines of issue#" + issue_number;
     const apiResults = await fetch(url, {
         method: 'GET',
         headers: {
@@ -278,9 +294,13 @@ const letsGo = async () => {
             const myTimeline = await getEntireTimeline(issue_number, pageNo = 1);
             var myTimelineKeys = Object.keys(myTimeline);
 
+    
             for (var y = 0, lengths = myTimelineKeys.length; y < lengths; y++) {
                 // first label
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+                    if (myTimeline[x].actor == null){
+                        continue;
+                    }
                     var checkUser = githubUsers.includes(myTimeline[x].actor.id);
                     var isLabelled = labelEvent.includes(myTimeline[x].event);
 
@@ -300,6 +320,9 @@ const letsGo = async () => {
                 }
 
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+                    if (myTimeline[x].actor == null){
+                        continue;
+                    }
                     var checkUser = githubUsers.includes(myTimeline[x].actor.id);
                     var isLabelled = labelEvent.includes(myTimeline[x].event);
 
@@ -322,7 +345,7 @@ const letsGo = async () => {
                         participants_array.push(myTimeline[x].actor.login);
                     }
 
-                    if (myTimeline[x].event == "assigned"){
+                    if (myTimeline[x].event == "assigned") {
                         poc_assignee = myTimeline[x].actor.login;
                         assigned_date = formatDate(myTimeline[x].created_at);
                     }
@@ -334,6 +357,9 @@ const letsGo = async () => {
                 participants = dup.join(';');
 
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+                    if (myTimeline[x].actor == null){
+                        continue;
+                    }
                     var date2 = new Date(myTimeline[x].created_at);
                     var date3 = new Date(created_at);
 
@@ -355,6 +381,9 @@ const letsGo = async () => {
 
                 // first FR
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+                    if (myTimeline[x].actor == null){
+                        continue;
+                    }
                     var checkUser = githubUsers.includes(myTimeline[x].actor.id);
                     var date2 = new Date(myTimeline[x].created_at);
                     var date3 = new Date(created_at);
@@ -372,6 +401,9 @@ const letsGo = async () => {
 
                 // First need info
                 for (var x = 0, length2 = myTimelineKeys.length; x < length2; x++) {
+                    if (myTimeline[x].actor == null){
+                        continue;
+                    }
                     var checkUser = githubUsers.includes(myTimeline[x].actor.id);
 
                     if (myTimeline[x].actor.id != google_oos_bot_uid && myTimeline[x].event == "labeled" && (myTimeline[x].label.name == "needs-info" || myTimeline[x].label.name == "needs info")) {
